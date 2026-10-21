@@ -7,8 +7,7 @@ Defensive/SOC, Threat Intel & DFIR, DevSecOps, AI Security, GRC, or Security
 Engineering & Cloud — and work through Level 2 and Level 3 paths. Every week tells you
 what to open, what to build, and how to know you're done.
 
-> **▶ Start here: https://ARKSHERX.github.io/cyber-path/**
-> *(replace with your actual Pages URL once enabled — see Setup below)*
+> **▶ Start here: https://github.com/ArksherX/cyber-path/**
 
 ---
 
