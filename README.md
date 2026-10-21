@@ -1,97 +1,151 @@
+<div align="center">
+
 # Cyber Path
 
-**A self-study map of cybersecurity careers. One page, twenty paths, no sign-up.**
+### A self-study map of cybersecurity careers.<br/>One page. Twenty paths. No sign-up.
 
-Everyone starts at Foundations. Then you pick one of seven domains — Offensive,
-Defensive/SOC, Threat Intel & DFIR, DevSecOps, AI Security, GRC, or Security
-Engineering & Cloud — and work through Level 2 and Level 3 paths. Every week tells you
-what to open, what to build, and how to know you're done.
+[![Open the site](https://img.shields.io/badge/▶%20Open%20Cyber%20Path-2563eb?style=for-the-badge&logoColor=white)](https://arksherx.github.io/cyber-path/)
 
-> **▶ Start here: https://arksherx.github.io/cyber-path/**
+[![Licence: CC BY-SA 4.0](https://img.shields.io/badge/Licence-CC%20BY--SA%204.0-lightgrey.svg?style=flat-square)](https://creativecommons.org/licenses/by-sa/4.0/)
+![Works offline](https://img.shields.io/badge/works-offline-success?style=flat-square)
+![No tracking](https://img.shields.io/badge/tracking-none-success?style=flat-square)
+![Single file](https://img.shields.io/badge/single-HTML%20file-blue?style=flat-square)
+![Paths](https://img.shields.io/badge/paths-20-blue?style=flat-square)
+![Steps](https://img.shields.io/badge/steps-497-blue?style=flat-square)
+
+<img src="docs/hero.png" alt="Cyber Path — Start from zero, pick your lane. Sidebar showing seven domains with progress, and a hero panel with 20 paths, 170 weeks and 139 checked links." width="100%">
+
+</div>
 
 ---
 
-## What's in it
+## What this is
 
-| | |
-|---|---|
-| **20** | learning paths |
-| **170** | weeks of structured study |
-| **497** | individual steps |
-| **139** | checked links to free and paid resources |
-| **7** | domains, plus a shared Foundations track |
+Most people who want to get into security are stopped by the same thing: not a lack of
+material, but **too much of it, with no order**. A thousand tutorials and no answer to
+*"what do I do on Monday?"*
 
-Plus a **role quiz** if you don't know which domain fits, a **study planner**, a
-**weekly log**, and **progress tracking** that ticks off steps as you finish them.
+Cyber Path is one page that answers that. Everyone starts at **Foundations**. Then you
+pick one of **seven domains** and work through Level 2, then the advanced Level 3 paths.
+Every week tells you **what to open, what to build, and how to know you're done**.
 
-## Three things that make it practical
+<div align="center">
 
-**It works completely offline.** There are no external scripts, no trackers, no API
-calls — the entire thing is one self-contained HTML file. Download it once and it works
-on a plane, on mobile data you're rationing, or on a connection that drops. That is
-deliberate.
+|  |  |  |  |  |
+|:--:|:--:|:--:|:--:|:--:|
+| **20** | **170** | **497** | **139** | **7** |
+| paths | weeks | steps | checked links | domains |
 
-**No account, no email, nothing to sign up for.** Your progress is stored in your own
-browser, on your own device. Nobody is collecting it, because there's no server to
-collect it with.
+</div>
 
-**It's one file.** Easy to share on WhatsApp, drop on a USB stick, or hand to a study
-group that doesn't all have reliable internet.
+---
+
+## The seven domains
+
+<img src="docs/paths.png" alt="Domain cards showing Foundations 10 weeks, Offensive 12 weeks, Defensive/SOC 10 weeks, Threat Intel and DFIR 10 weeks, DevSecOps 10 weeks, and AI Security 12 weeks, each with hour estimates and Level 3 electives." width="100%">
+
+| Domain | Level 2 | What you'll be able to do |
+|---|---|---|
+| 🟠 **Offensive** | 12 wk | Web, network, mobile and red team basics |
+| 🔵 **Defensive / SOC** | 10 wk | Detect, triage and respond |
+| 🟡 **Threat Intel & DFIR** | 10 wk | Understand adversaries, investigate incidents |
+| 🩷 **DevSecOps** | 10 wk | Build security into the pipeline |
+| 🩵 **AI Security** | 12 wk | Attack and defend models and agents |
+| 🟢 **GRC** | — | Risk, controls and audit |
+| 🟧 **Security Engineering & Cloud** | — | Design systems secure from the start |
+
+Each domain has **Level 3 electives** — Active Directory, Wi-Fi, Advanced Web & API,
+Cloud Pentesting, Purple Team, Detection Engineering, Threat Hunting and more.
+
+---
+
+## Not sure which domain fits you?
+
+**Take the role quiz.** Six questions, two minutes. No right answers — it just suggests
+the domains that match how you like to work.
+
+<img src="docs/quiz.png" alt="Role quiz: six questions that suggest which domains fit how you like to work." width="100%">
+
+---
+
+## Why it's built this way
+
+**🔌 It works completely offline.**
+No external scripts, no trackers, no API calls. The whole thing is one self-contained
+HTML file. Download it once and it works on a plane, on mobile data you're rationing, or
+on a connection that keeps dropping. That is deliberate, not an accident.
+
+**🔒 No account. No email. Nothing to sign up for.**
+Your progress is stored in your own browser, on your own device. Nobody is collecting
+it — there is no server to collect it with.
+
+**📄 It's one file.**
+Share it on WhatsApp. Put it on a USB stick. Hand it to a study group where not everyone
+has reliable internet.
+
+**⚖️ It takes the legal part seriously.**
+Everything here is for legal, authorised learning only, on systems you own or have
+written permission to test. The guidance says so explicitly, and names the law.
 
 ---
 
 ## How to use it
 
-### Option 1 — just open it (easiest)
-Visit the link above. That's it. Works on phone and desktop.
+### Just open it — easiest
+### → **[arksherx.github.io/cyber-path](https://arksherx.github.io/cyber-path/)**
+Works on phone and desktop. Nothing to install.
 
-### Option 2 — download and keep it
-Download `index.html`, open it in any browser. Works with no internet connection.
+### Download and keep it
+Grab `index.html` and open it in any browser. Works with no internet at all.
 
 ```bash
-# or grab it from the command line
-curl -L -o cyber-path.html https://raw.githubusercontent.com/ArksherX/cyber-path/main/index.html
+curl -L -o cyber-path.html \
+  https://raw.githubusercontent.com/ArksherX/cyber-path/main/index.html
 ```
 
-### Option 3 — clone it
+### Clone it
 ```bash
 git clone https://github.com/ArksherX/cyber-path.git
-cd cyber-path
-# open index.html in your browser
+cd cyber-path && open index.html     # or xdg-open / start
 ```
 
 ---
 
-## ⚠️ Important: how your progress is saved
-
-Your progress is saved **in the browser you're using, on the device you're using.**
-It is not synced anywhere.
-
-That means:
-- Progress on the **website** and progress on a **downloaded copy** are stored separately.
-- Clearing your browser data will erase it.
-- A different device or browser starts fresh.
-
-**So use the built-in Backup and restore.** Open *Backup and restore* in the sidebar,
-export your progress to a file, and keep it. You can restore it on any device, or after
-clearing your browser. If you're switching between the hosted version and a downloaded
-copy, this is how you carry your progress across.
+> ### ⚠️ Read this before you start ticking boxes
+>
+> Your progress is saved **in the browser you're using, on the device you're using.**
+> It is not synced anywhere, because there's no server.
+>
+> - Progress on the **website** and on a **downloaded copy** are stored separately
+> - Clearing browser data erases it
+> - A different device or browser starts fresh
+>
+> **So use Backup and restore** (in the sidebar). Export your progress to a file and keep
+> it. You can restore it on any device, after clearing your browser, or when moving
+> between the hosted and downloaded versions. Do this before you have 200 steps to lose.
 
 ---
 
 ## Contributing
 
-Corrections and additions are genuinely welcome — especially:
-- **Broken links.** 139 external links will rot over time. Reporting a dead one is the
-  single most useful contribution.
-- **Better free resources**, particularly ones accessible outside the US/EU.
-- **Corrections** to anything outdated or wrong.
+Corrections are genuinely welcome — this gets better when people who used it push back.
+
+**Most useful, in order:**
+
+1. **Dead links.** 139 external links will rot. Reporting one is the single most useful
+   thing you can do. There's a checker in the repo:
+   ```bash
+   python3 check-links.py          # standard library only, nothing to install
+   ```
+2. **Better free resources** — especially ones accessible outside the US and EU.
+3. **Corrections** to anything outdated, wrong, or unclear.
+4. **Translations.** Open an issue and it'll be linked from here.
 
 Open an issue, or send a pull request against `index.html`.
 
-**Please don't** send pull requests that add paid courses you're affiliated with, or
-that replace free resources with gated ones. The point is that someone with no money
-and a slow connection can still learn this.
+**Please don't** submit paid courses you're affiliated with, or swap free resources for
+gated ones. The whole point is that someone with no money and a slow connection can
+still learn this.
 
 ---
 
@@ -100,29 +154,18 @@ and a slow connection can still learn this.
 **[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)** — Creative Commons
 Attribution-ShareAlike.
 
-You can share it, adapt it, translate it, print it, or teach from it — including
-commercially. Two conditions: **credit the original**, and **keep derivatives under the
-same licence** so they stay open too.
-
-Translations are especially welcome. If you translate it, open an issue so it can be
-linked from here.
+Share it, adapt it, translate it, print it, teach from it — including commercially.
+Two conditions: **credit the original**, and **keep derivatives under the same licence**,
+so they stay open for the next person too.
 
 Linked third-party resources belong to their respective owners and carry their own terms.
 
 ---
 
-## Setup (for the maintainer)
+<div align="center">
 
-To publish this with GitHub Pages:
+Built by **[Miracle Owolabi](https://www.linkedin.com/in/miracleowolabi-security)**
 
-1. Create the repo and push (see `SETUP.md`).
-2. On GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / `(root)` → Save.**
-3. Wait ~1 minute. The URL appears on that same settings page.
-4. Update the link at the top of this README.
+*If it helped you, pass it on to someone starting out.*
 
-GitHub Pages is free for public repositories.
-
----
-
-Built by [Miracle Owolabi](https://www.linkedin.com/in/miracleowolabi-security).
-If it helped you, pass it on to someone starting out.
+</div>
