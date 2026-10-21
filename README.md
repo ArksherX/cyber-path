@@ -7,7 +7,7 @@ Defensive/SOC, Threat Intel & DFIR, DevSecOps, AI Security, GRC, or Security
 Engineering & Cloud — and work through Level 2 and Level 3 paths. Every week tells you
 what to open, what to build, and how to know you're done.
 
-> **▶ Start here: https://github.com/ArksherX/cyber-path/**
+> **▶ Start here: https://arksherx.github.io/cyber-path/**
 
 ---
 
@@ -50,12 +50,12 @@ Download `index.html`, open it in any browser. Works with no internet connection
 
 ```bash
 # or grab it from the command line
-curl -L -o cyber-path.html https://raw.githubusercontent.com/ARKSHERX/cyber-path/main/index.html
+curl -L -o cyber-path.html https://raw.githubusercontent.com/ArksherX/cyber-path/main/index.html
 ```
 
 ### Option 3 — clone it
 ```bash
-git clone https://github.com/ARKSHERX/cyber-path.git
+git clone https://github.com/ArksherX/cyber-path.git
 cd cyber-path
 # open index.html in your browser
 ```
