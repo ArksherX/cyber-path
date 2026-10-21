@@ -42,17 +42,18 @@ Every week tells you **what to open, what to build, and how to know you're done*
 
 ## The seven domains
 
-<img src="docs/paths.png" alt="Domain cards showing Foundations 10 weeks, Offensive 12 weeks, Defensive/SOC 10 weeks, Threat Intel and DFIR 10 weeks, DevSecOps 10 weeks, and AI Security 12 weeks, each with hour estimates and Level 3 electives." width="100%">
+<img src="docs/paths.png" alt="All eight path cards: Foundations, Offensive, Defensive/SOC, Threat Intel and DFIR, DevSecOps, AI Security, GRC, and Security Engineering and Cloud, each with its duration, hour estimate and Level 3 electives." width="100%">
 
-| Domain | Level 2 | What you'll be able to do |
-|---|---|---|
-| 🟠 **Offensive** | 12 wk | Web, network, mobile and red team basics |
-| 🔵 **Defensive / SOC** | 10 wk | Detect, triage and respond |
-| 🟡 **Threat Intel & DFIR** | 10 wk | Understand adversaries, investigate incidents |
-| 🩷 **DevSecOps** | 10 wk | Build security into the pipeline |
-| 🩵 **AI Security** | 12 wk | Attack and defend models and agents |
-| 🟢 **GRC** | — | Risk, controls and audit |
-| 🟧 **Security Engineering & Cloud** | — | Design systems secure from the start |
+| Domain | Level 2 | Effort | What you'll be able to do | Level 3 path |
+|---|:--:|:--:|---|---|
+| ⬜ **Foundations** *(everyone starts here)* | 10 wk | ~90 h | Stand on solid ground before any domain | — |
+| 🟠 **Offensive** | 12 wk | ~130 h | Web, network, mobile and red team basics | AD, Wi-Fi, Advanced Web & API, Advanced Mobile, Cloud Pentesting, Purple Team, Adversary Emulation |
+| 🔵 **Defensive / SOC** | 10 wk | ~70 h | Detect, triage and respond | Detection Engineering and Threat Hunting |
+| 🟡 **Threat Intel & DFIR** | 10 wk | ~70 h | Understand adversaries, investigate incidents | Malware Triage and Advanced DFIR |
+| 🩷 **DevSecOps** | 10 wk | ~70 h | Build security into the pipeline | Supply Chain and Kubernetes Security |
+| 🩵 **AI Security** | 12 wk | ~85 h | Attack and defend models and agents | Agentic and Model Security |
+| 🟢 **GRC** | 10 wk | ~60 h | Policies, risk and assurance | Risk Quantification and Privacy |
+| 🟧 **Security Engineering & Cloud** | 12 wk | ~85 h | Design, harden and automate secure infrastructure | Cloud Architecture and Zero Trust |
 
 Each domain has **Level 3 electives** — Active Directory, Wi-Fi, Advanced Web & API,
 Cloud Pentesting, Purple Team, Detection Engineering, Threat Hunting and more.
