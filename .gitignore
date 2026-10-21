@@ -1,0 +1,5 @@
+# nothing runtime here — this is a single self-contained page
+.DS_Store
+Thumbs.db
+*.swp
+.local/

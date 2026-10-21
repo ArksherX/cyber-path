@@ -1,0 +1,1330 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cyber Path</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout concept: a ranked ladder. Sticky trail on the left, four colored tracks (Foundations, Offensive, Active Directory, Wi-Fi), each a list of tick-off weeks. */
+:root{
+  --bg:#EEF1F6; --surface:#FFFFFF; --surface2:#E3E8F0; --ink:#0E1A2B; --muted:#4B5A70; --line:#CBD3DF;
+  --brand:#1B4FD8; --brand-ink:#FFFFFF; --warn:#B3261E; --warn-bg:#FCECEA;
+  --found:#0E8A6E; --off:#D4531A; --ad:#6D3FD0; --wifi:#0F78B5;
+  --blue:#2F5BD0; --ti:#8A6A00; --devsec:#B0356B; --ai:#0B7F8C; --grc:#5A6B1F; --eng:#7B4B2A;
+  --code-bg:#0E1A2B; --code-ink:#DCE6F5;
+  --f-display:'Familjen Grotesk','Trebuchet MS',system-ui,sans-serif;
+  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#09111D; --surface:#101C2E; --surface2:#182742; --ink:#E6EDF8; --muted:#9AABC4; --line:#24385A;
+    --brand:#6E95FF; --brand-ink:#06122E; --warn:#FF8A80; --warn-bg:#2B1517;
+    --found:#34D3AE; --off:#FF8D55; --ad:#AE8BFF; --wifi:#4DB8F2;
+    --blue:#7DA2FF; --ti:#E8C44A; --devsec:#FF86B5; --ai:#4FD6E3; --grc:#B6CF5C; --eng:#E0A878;
+    --code-bg:#050B14; --code-ink:#DCE6F5; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#09111D; --surface:#101C2E; --surface2:#182742; --ink:#E6EDF8; --muted:#9AABC4; --line:#24385A;
+  --brand:#6E95FF; --brand-ink:#06122E; --warn:#FF8A80; --warn-bg:#2B1517;
+  --found:#34D3AE; --off:#FF8D55; --ad:#AE8BFF; --wifi:#4DB8F2;
+  --blue:#7DA2FF; --ti:#E8C44A; --devsec:#FF86B5; --ai:#4FD6E3; --grc:#B6CF5C; --eng:#E0A878;
+  --code-bg:#050B14; --code-ink:#DCE6F5; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;margin:0;
+  padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:var(--brand);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0}
+code{font-family:var(--f-mono);font-size:.88em;background:var(--surface2);padding:.1em .38em;border-radius:5px}
+.shell{max-width:1200px;margin-inline:auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;padding-block:20px 80px}
+.side{position:sticky;top:calc(20px + env(safe-area-inset-top,0px));align-self:start;display:flex;flex-direction:column;gap:18px;max-height:calc(100vh - 40px);overflow:auto}
+.brandmark{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.3rem}
+.trail{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
+.trail a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem}
+.trail a:hover{background:var(--surface2)}
+.trail .grp{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 10px 4px}
+.dot{width:12px;height:12px;border-radius:3px;background:var(--c,var(--muted));flex:none}
+.trail .pct{margin-left:auto;font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.sidefoot{display:flex;flex-direction:column;gap:10px;font-size:.85rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:600;border:0;border-radius:10px;padding:12px 18px;background:var(--brand);color:var(--brand-ink);text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.btn.small{padding:7px 12px;font-size:.85rem;border-radius:8px}
+.main{display:flex;flex-direction:column;gap:72px;min-width:0}
+.topbar{display:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:32px;align-items:center;padding-block:12px}
+.eyebrow{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:700;letter-spacing:-.02em;margin-block:10px 16px}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p.lead{font-size:1.12rem;color:var(--muted);max-width:52ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.stat b{display:block;font-family:var(--f-display);font-size:1.9rem;font-weight:700;line-height:1}
+.stat span{font-size:.82rem;color:var(--muted)}
+.hero svg{width:100%;height:auto;max-width:100%}
+.me{display:flex;flex-wrap:wrap;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.me .rank{font-family:var(--f-display);font-weight:700;font-size:1.4rem}
+.me small{display:block;color:var(--muted);font-size:.85rem}
+.bar{flex:1;min-width:180px;height:12px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--found),var(--wifi),var(--ad),var(--off));border-radius:99px;transition:width .4s}
+.sec-head{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;max-width:70ch}
+.sec-head h2{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:700;letter-spacing:-.01em}
+.sec-head p{color:var(--muted)}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{font-size:1.2rem}
+.card .big{font-family:var(--f-display);font-weight:700;font-size:2.2rem;line-height:1;color:var(--c,var(--brand))}
+.card p,.card li{color:var(--muted);font-size:.95rem}
+.card .meta{font-family:var(--f-mono);font-size:.75rem;color:var(--muted)}
+.card a.go{margin-top:auto;font-weight:600;text-decoration:none}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:r}
+.rules li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:12px}
+.rules li::before{counter-increment:r;content:counter(r);font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:var(--brand);flex:none;width:1.4rem}
+.rules b{display:block}
+.rules span{color:var(--muted);font-size:.93rem}
+.safe{background:var(--warn-bg);border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-left:6px solid var(--warn);border-radius:12px;padding:16px 20px;color:var(--ink)}
+.safe b{color:var(--warn)}
+.check{display:flex;gap:12px;align-items:flex-start;padding:7px 0;cursor:pointer}
+.check input{appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;margin:2px 0 0;border:2px solid var(--muted);border-radius:6px;background:var(--surface);cursor:pointer;display:grid;place-items:center}
+.check input:checked{background:var(--c,var(--brand));border-color:var(--c,var(--brand))}
+.check input:checked::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.check .t{min-width:0;overflow-wrap:anywhere}
+.check input:checked + .t{color:var(--muted)}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:.68rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:6px;margin-right:8px;vertical-align:1px;background:color-mix(in srgb,var(--p,var(--c)) 16%,var(--surface));color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--p,var(--c)) 55%,transparent)}
+.pill.Learn{--p:var(--wifi)}
+.pill.Practice{--p:var(--off)}
+.pill.Lab{--p:var(--ad)}
+.pill.Read{--p:var(--found)}
+.world{--c:var(--found);border-radius:24px;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.w-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:center;padding:30px clamp(18px,4vw,36px);background:color-mix(in srgb,var(--c) 14%,var(--surface));border-bottom:1px solid var(--line)}
+.w-head .ico{width:80px;height:80px;border-radius:18px;background:var(--c);display:grid;place-items:center;color:var(--brand-ink);font-family:var(--f-display);font-weight:700;font-size:1.9rem}
+.w-head .tag{font-family:var(--f-mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.w-head h2{font-size:clamp(1.7rem,4vw,2.7rem);font-weight:700;margin-block:4px 8px}
+.w-head p{color:var(--muted);max-width:62ch}
+.w-meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:14px;align-items:center}
+.w-meta .bar{max-width:260px;min-width:120px;flex:none;width:200px;background:color-mix(in srgb,var(--c) 18%,var(--surface))}
+.w-meta .bar i{background:var(--c)}
+.w-meta span{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.w-body{padding:clamp(18px,4vw,36px);display:flex;flex-direction:column;gap:32px}
+.tools{display:flex;flex-wrap:wrap;gap:10px}
+.tools a{display:inline-flex;gap:8px;align-items:center;text-decoration:none;font-weight:600;font-size:.9rem;color:var(--ink);background:var(--surface2);border-radius:10px;padding:8px 13px;box-shadow:inset 0 0 0 1px var(--line)}
+.tools a:hover{box-shadow:inset 0 0 0 2px var(--c)}
+.sub{font-size:1.3rem;font-weight:700;margin-bottom:12px}
+.weeks{display:flex;flex-direction:column;gap:14px}
+.wk{display:grid;grid-template-columns:72px minmax(0,1fr);gap:6px 20px;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.wk.done{background:color-mix(in srgb,var(--c) 9%,var(--surface));border-color:color-mix(in srgb,var(--c) 50%,var(--line))}
+.wk .num{font-family:var(--f-display);font-weight:700;font-size:2.6rem;line-height:.95;color:var(--c);text-align:center}
+.wk .num small{display:block;font-family:var(--f-mono);font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.wk h4{font-size:1.2rem;font-weight:700}
+.wk .at{font-size:.83rem;color:var(--muted);font-family:var(--f-mono);margin:4px 0 6px}
+.wk .block{margin-top:10px;padding:12px 14px;border-radius:10px;background:var(--surface);border:1px dashed color-mix(in srgb,var(--c) 60%,var(--line));display:flex;flex-direction:column;gap:4px}
+.wk .block b{font-size:.78rem;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.wk .block.done-when{border-style:solid}
+.wk .body{min-width:0}
+.phasecheck{background:color-mix(in srgb,var(--c) 10%,var(--surface));border:2px solid var(--c);border-radius:16px;padding:18px 22px}
+.next{display:flex;flex-wrap:wrap;align-items:center;gap:10px;color:var(--muted);font-size:.95rem}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th{text-align:left;font-family:var(--f-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 14px;background:var(--surface2)}
+td{padding:12px 14px;border-top:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+td:first-child{font-weight:600}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 22px;color:var(--muted)}
+.note b{color:var(--ink)}
+.log textarea{width:100%;min-height:96px;font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px;resize:vertical}
+.log .entries{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.log .entry{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:.93rem}
+.log .entry small{display:block;font-family:var(--f-mono);color:var(--muted);font-size:.74rem}
+.notebox{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.notebox textarea{width:100%;min-height:84px;font:inherit;font-size:.95rem;background:var(--surface);color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 55%,var(--line));border-radius:10px;padding:10px 12px;resize:vertical}
+.notebox .btn{align-self:flex-start}
+.ntab{position:fixed;right:env(safe-area-inset-right,0px);top:50%;transform:translateY(-50%);z-index:70;writing-mode:vertical-rl;background:var(--brand);color:var(--brand-ink);border:0;border-radius:12px 0 0 12px;padding:16px 10px;font:inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.ntab b{writing-mode:horizontal-tb;background:var(--brand-ink);color:var(--brand);border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:.78rem;padding:0 6px}
+.npanel{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:80;background:var(--surface);border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.25);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.npanel.open{transform:none}
+.nhead{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.nhead h3{font-size:1.25rem;flex:1}
+.ntools{padding:12px 18px;display:flex;flex-direction:column;gap:10px;border-bottom:1px solid var(--line)}
+.ntools input,.nscratch textarea{width:100%;font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.nlist{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px}
+.nitem{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.nitem .nh{display:flex;gap:8px;align-items:center;font-size:.82rem;font-family:var(--f-mono);color:var(--muted);margin-bottom:6px}
+.nitem .nt{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.95rem}
+.nitem button{margin-top:8px}
+.nempty{color:var(--muted);font-size:.95rem}
+.nscratch{padding:12px 18px;border-top:1px solid var(--line)}
+.nscratch label{display:block;font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+@media (prefers-reduced-motion:reduce){.npanel{transition:none}}
+.nci{font-size:.9rem;color:var(--ink);margin-bottom:4px}
+.nci b{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.notebox input[type=text]{width:100%;font:inherit;font-size:.95rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.notebox label.cil{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+details.dom{border-radius:10px}
+details.dom>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer}
+details.dom>summary::-webkit-details-marker{display:none}
+details.dom>summary::after{content:"+";color:var(--muted);margin-left:6px}
+details.dom[open]>summary::after{content:"\2212"}
+details.dom>summary:hover{background:var(--surface2)}
+details.dom>summary .pct{margin-left:auto}
+.trail.sub{padding-left:14px;border-left:2px solid var(--line);margin-left:15px}
+.trail .lvl,.rcard .lvl{font-family:var(--f-mono);font-size:.64rem;font-weight:600;padding:1px 5px;border-radius:5px;background:var(--surface2);color:var(--muted);flex:none}
+.prereq{font-family:var(--f-mono);font-size:.8rem;color:var(--muted);margin-top:8px}
+.routectl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.routectl label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+.routectl select{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.nextup{background:color-mix(in srgb,var(--brand) 10%,var(--surface));border:2px solid var(--brand);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.nextup a{color:var(--ink);text-decoration:none}
+.nextup a:hover{text-decoration:underline}
+.rlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.rcard{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:12px;padding:12px 14px}
+.rcard>div{flex:1}
+.rcard .qbar i{background:var(--c)}
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.74rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:var(--c);color:var(--brand-ink)}
+.badges{width:100%;display:flex;flex-wrap:wrap;gap:8px}
+[hidden]{display:none !important}
+.world.complete{box-shadow:0 0 0 3px var(--c)}
+/* quiz */
+.qform{display:flex;flex-direction:column;gap:18px}
+.qform fieldset{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--surface);margin:0;min-width:0}
+.qform legend{font-family:var(--f-display);font-weight:700;font-size:1.1rem;padding:0 8px}
+.qform label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.qform input[type=radio]{margin-top:5px;accent-color:var(--brand);flex:none}
+.qout{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.qres{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;gap:8px}
+.qres h3{font-size:1.25rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qbar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--c)}
+.qres .acts{display:flex;gap:8px;flex-wrap:wrap}
+/* planner */
+.plan{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:24px;align-items:start}
+.plan .ctl{display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.plan label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+.plan input[type=date],.plan input[type=number]{font:inherit;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%}
+.plan .pp{display:flex;flex-direction:column;max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--bg)}
+.plan .pp label{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:.92rem;cursor:pointer}
+.plan .pp input{accent-color:var(--brand)}
+/* data */
+.dataform{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.dataform textarea{width:100%;min-height:110px;font-family:var(--f-mono);font-size:.78rem;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px;resize:vertical}
+@media (max-width:760px){.plan{grid-template-columns:minmax(0,1fr)}}
+@media print{
+  .side,.topbar,.ntab,.npanel,.cta,.notebox button,#quiz,#planner,#data,#track,.me{display:none!important}
+  .shell{display:block;padding:0}
+  body{background:#fff;color:#000}
+  .wk{break-inside:avoid}
+  .main{gap:24px}
+}
+footer{color:var(--muted);font-size:.85rem;padding-top:8px}
+@media (max-width:960px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:0}
+  .side{display:none}
+  .topbar{display:flex;position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--bg);gap:8px;overflow-x:auto;padding:10px 0;margin-bottom:10px;border-bottom:1px solid var(--line)}
+  .topbar a{flex:none;text-decoration:none;color:var(--ink);font-weight:600;font-size:.85rem;padding:7px 12px;border-radius:99px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);display:flex;gap:7px;align-items:center}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .main{gap:56px}
+}
+@media (max-width:560px){
+  .wk{grid-template-columns:minmax(0,1fr)}
+  .wk .num{text-align:left;display:flex;align-items:baseline;gap:10px;font-size:2rem}
+  .wk .num small{margin:0}
+  .w-head{grid-template-columns:minmax(0,1fr)}
+  .w-head .ico{width:60px;height:60px;font-size:1.5rem}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
+</style>
+
+<div class="shell">
+  <aside class="side" aria-label="Path trail">
+    <div class="brandmark">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect width="34" height="34" rx="8" fill="var(--brand)"/><path d="M9 12l6 5-6 5M18 23h8" fill="none" stroke="var(--brand-ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Cyber Path
+    </div>
+    <ul class="trail" id="trail"></ul>
+    <ul class="trail">
+      <li class="grp">Tools</li>
+      <li><a href="#quiz"><span class="dot"></span>Role quiz</a></li>
+      <li><a href="#route"><span class="dot"></span>My route</a></li>
+      <li><a href="#planner"><span class="dot"></span>Study planner</a></li>
+      <li><a href="#data"><span class="dot"></span>Backup and restore</a></li>
+    </ul>
+    <div class="sidefoot">
+      <button class="btn ghost small" id="themeBtn" type="button">Switch light / dark</button>
+      <span id="sideProgress"></span>
+    </div>
+  </aside>
+
+  <div style="min-width:0">
+    <nav class="topbar" id="topbar" aria-label="Sections"></nav>
+    <main class="main">
+
+      <section class="hero" id="top">
+        <div>
+          <div class="eyebrow">A self-study map of cybersecurity careers</div>
+          <h1>Start from zero. <em>Pick your lane.</em></h1>
+          <p class="lead">One page, twenty paths. Everyone starts with Foundations. Then pick one main domain from seven: Offensive, Defensive, Threat Intel and DFIR, DevSecOps, AI Security, GRC or Security Engineering. Each has a Level 2 path and advanced Level 3 paths. Every week says what to open, what to build and how to know you are done.</p>
+          <div class="cta">
+            <a class="btn" href="#how">How it works</a>
+            <a class="btn ghost" href="#found">Start Foundations</a>
+            <a class="btn ghost" id="resumeBtn" href="#top" hidden>Continue</a>
+          </div>
+          <div class="stats" id="stats"></div>
+        </div>
+        <svg viewBox="0 0 520 380" role="img" aria-label="A terminal window with a ladder of three levels beside it">
+          <rect x="44" y="52" width="320" height="250" rx="16" fill="var(--brand)" opacity=".16"/>
+          <rect x="30" y="36" width="320" height="250" rx="16" fill="var(--code-bg)" stroke="var(--line)" stroke-width="2"/>
+          <circle cx="54" cy="60" r="6" fill="var(--off)"/><circle cx="74" cy="60" r="6" fill="var(--found)"/><circle cx="94" cy="60" r="6" fill="var(--wifi)"/>
+          <g font-family="IBM Plex Mono, monospace" font-size="14" fill="var(--code-ink)">
+            <text x="52" y="108">$ nmap -sV lab-target</text>
+            <text x="52" y="136" fill="var(--found)">22/tcp  open  ssh</text>
+            <text x="52" y="160" fill="var(--found)">80/tcp  open  http</text>
+            <text x="52" y="196">$ scope: lab only</text>
+            <text x="52" y="224" fill="var(--off)">authorised: yes</text>
+            <text x="52" y="256">$ <tspan fill="var(--wifi)">_</tspan></text>
+          </g>
+          <g font-family="Familjen Grotesk, sans-serif" font-weight="700">
+            <rect x="372" y="236" width="128" height="52" rx="12" fill="var(--found)"/><text x="388" y="268" font-size="18" fill="#04140F">Foundations</text>
+            <rect x="372" y="168" width="128" height="52" rx="12" fill="var(--off)"/><text x="388" y="200" font-size="18" fill="#1E0A02">Offensive</text>
+            <rect x="372" y="100" width="62" height="52" rx="12" fill="var(--ad)"/><text x="384" y="132" font-size="18" fill="#0E0626">AD</text>
+            <rect x="440" y="100" width="60" height="52" rx="12" fill="var(--wifi)"/><text x="450" y="132" font-size="18" fill="#021320">Wi-Fi</text>
+          </g>
+          <path d="M436 232v-12M436 164v-12" stroke="var(--muted)" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>
+        </svg>
+      </section>
+
+      <div class="me" id="me">
+        <div>
+          <div class="rank" id="rank">Rookie</div>
+          <small id="rankSub">Tick boxes as you finish things. Progress saves on this device.</small>
+        </div>
+        <div class="bar" aria-hidden="true"><i id="totalBar"></i></div>
+        <b id="totalPct" style="font-family:var(--f-mono)">0%</b>
+        <div class="badges" id="badges"></div>
+      </div>
+
+      <section id="how">
+        <div class="sec-head">
+          <div class="eyebrow">How this works</div>
+          <h2>One way in, seven domains</h2>
+          <p>Everyone starts at Foundations (Level 1). Then pick one main domain (Level 2) and go deeper with its advanced paths (Level 3). Add a side domain if you want to learn two things at once. If you already know the basics, skip ahead. Not sure which domain? Take the role quiz below.</p>
+        </div>
+        <div class="cards3" id="overview" style="margin-bottom:26px"></div>
+        <ol class="rules">
+          <li><div><b>Type everything by hand</b><span>No copy and paste until you can explain the line.</span></div></li>
+          <li><div><b>Predict, then run</b><span>Say what you expect before you run a command. Surprises are where you learn.</span></div></li>
+          <li><div><b>Write it down</b><span>Keep notes and a log. A finding you cannot explain later is a finding you did not learn.</span></div></li>
+          <li><div><b>Labs only</b><span>Practise on your own machines and on platforms built for it. Nothing else.</span></div></li>
+          <li><div><b>Explain it back</b><span>Each week, explain what you learned in two minutes. If you cannot, repeat the week.</span></div></li>
+          <li><div><b>Pace yourself</b><span>8 to 12 hours a week is plenty. Splitting a week in two is fine. Quitting is the only mistake.</span></div></li>
+        </ol>
+        <div class="safe" style="margin-top:20px"><b>Safety and legal.</b> Everything here is for legal, authorised learning only. Test systems you own or have written permission to test. Unauthorised access is a crime under Nigeria's Cybercrimes (Prohibition, Prevention, etc.) Act 2015 and similar laws elsewhere. This path contains no destructive techniques: no data destruction, no denial of service, no ransomware.</div>
+      </section>
+
+      <section id="setup">
+        <div class="sec-head">
+          <div class="eyebrow">Before week 1</div>
+          <h2>Setup, one afternoon</h2>
+          <p>A laptop or desktop with at least 8 GB of RAM works best. Do this once and every path uses it.</p>
+        </div>
+        <div class="note" style="padding-block:10px" id="setupList"></div>
+      </section>
+
+      <section id="quiz">
+        <div class="sec-head">
+          <div class="eyebrow">Not sure where to go?</div>
+          <h2>Role quiz</h2>
+          <p>Six questions, two minutes. It suggests the domains that fit how you like to work. There are no right answers. Everyone still starts with Foundations.</p>
+        </div>
+        <form class="qform" id="quizForm" novalidate></form>
+        <div class="qout" id="quizOut" aria-live="polite"></div>
+      </section>
+
+      <section id="route">
+        <div class="sec-head">
+          <div class="eyebrow">Your plan</div>
+          <h2>My route</h2>
+          <p>Pick one main domain. Add a side domain if you want to learn two things at once. Foundations always comes first. Your progress bar, sidebar and planner then follow your route instead of all twenty paths.</p>
+        </div>
+        <div class="routectl">
+          <label class="f" for="routeMain">Main domain<select id="routeMain"></select></label>
+          <label class="f" for="routeSide">Side domain, optional<select id="routeSide"></select></label>
+        </div>
+        <div class="note" id="routeElect" hidden style="margin-top:14px"></div>
+        <div id="routeOut" style="margin-top:18px" aria-live="polite"></div>
+      </section>
+
+      <section id="pivot">
+        <div class="sec-head">
+          <div class="eyebrow">Choose your lane</div>
+          <h2>Which domain fits you?</h2>
+          <p>Everyone does Foundations first. Offensive is one domain among seven, not a prerequisite for the others. Pick the domain that fits you, then use My route to build your plan. Offensive has six advanced electives (pick one or two). Every other domain has one advanced path. You can pivot later, because the core skills carry over.</p>
+        </div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Domain</th><th>You may like it if</th><th>Do first</th><th>Typical roles</th></tr></thead>
+          <tbody>
+            <tr><td><a href="#off">Offensive</a></td><td>You enjoy breaking things and solving puzzles</td><td>Foundations</td><td>Penetration tester, red teamer, bug bounty hunter</td></tr>
+            <tr><td><a href="#blue">Defensive / SOC</a></td><td>You like watching systems, spotting patterns and acting fast</td><td>Foundations</td><td>SOC analyst, incident responder, detection engineer</td></tr>
+            <tr><td><a href="#ti">Threat Intel and DFIR</a></td><td>You like research, writing and investigation</td><td>Foundations</td><td>Threat intelligence analyst, forensic investigator</td></tr>
+            <tr><td><a href="#devsec">DevSecOps</a></td><td>You like code, automation and pipelines</td><td>Foundations plus basic coding</td><td>DevSecOps engineer, application security engineer</td></tr>
+            <tr><td><a href="#ai">AI Security</a></td><td>You are curious about models and how they fail</td><td>Foundations plus Python basics</td><td>AI red teamer, AI security engineer</td></tr>
+            <tr><td><a href="#grc">GRC</a></td><td>You prefer standards, policy and clear writing to tools</td><td>Foundations</td><td>GRC analyst, risk analyst, compliance and audit roles</td></tr>
+            <tr><td><a href="#eng">Security Engineering and Cloud</a></td><td>You like designing and building systems</td><td>Foundations plus some Linux and networking</td><td>Security engineer, cloud security engineer, infrastructure engineer</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note" style="margin-top:16px"><b>Pivot tip.</b> Finish Foundations before choosing. Then try the first two weeks of two domains. Keep the one you finish the weekly task for without being pushed.</p>
+      </section>
+
+      <section id="planner">
+        <div class="sec-head">
+          <div class="eyebrow">Plan your time</div>
+          <h2>Study planner</h2>
+          <p>Choose your paths, your start date and the hours you can give each week. The planner estimates when you finish. It counts only the weeks you have not completed, so it updates as you tick boxes.</p>
+        </div>
+        <div class="plan">
+          <div class="ctl">
+            <label class="f" for="planStart">Start date<input type="date" id="planStart"></label>
+            <label class="f" for="planHours">Hours per week<input type="number" id="planHours" min="1" max="60" value="8"></label>
+            <div><div style="font-size:.9rem;color:var(--muted);margin-bottom:6px">Paths in my plan</div><div class="pp" id="planPaths"></div></div>
+          </div>
+          <div>
+            <div class="tablewrap"><table><thead><tr><th>Path</th><th>Weeks left</th><th>Calendar weeks</th><th>Starts</th><th>Ends</th></tr></thead><tbody id="planOut"></tbody></table></div>
+            <p class="note" style="margin-top:14px" id="planSum"></p>
+          </div>
+        </div>
+      </section>
+
+      <div id="worlds" style="display:flex;flex-direction:column;gap:72px"></div>
+
+      <section id="res">
+        <div class="sec-head">
+          <div class="eyebrow">Everything in one place</div>
+          <h2>All links, by path</h2>
+          <p>Every link was opened and checked while building this page. Free tiers and course names can change, so open each one once before its week starts.</p>
+        </div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Resource</th><th>Path</th><th>Link</th></tr></thead>
+          <tbody id="resBody"></tbody>
+        </table></div>
+      </section>
+
+      <section id="track">
+        <div class="sec-head">
+          <div class="eyebrow">Keep score</div>
+          <h2>Weekly log</h2>
+          <p>Five minutes a week. Write what you built, what confused you and what you try next.</p>
+        </div>
+        <div class="log" id="log">
+          <label for="logText" style="display:block;color:var(--muted);margin-bottom:8px">This week I learned, got stuck on, and will try next:</label>
+          <textarea id="logText" placeholder="Week 3: finished Bandit level 10. The grep flags confused me. Next: redo levels 5 to 8 from memory."></textarea>
+          <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn small" id="logSave" type="button">Save entry</button><button class="btn ghost small" id="logClear" type="button">Clear all entries</button></div>
+          <div class="entries" id="entries"></div>
+          <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Entries stay on this device and this browser only.</p>
+        </div>
+      </section>
+
+      <section id="data">
+        <div class="sec-head">
+          <div class="eyebrow">Your data</div>
+          <h2>Backup and restore</h2>
+          <p>Your ticks, notes, check-ins, log and plan live in this browser only. Copy the backup code and keep it somewhere safe, such as your own notes app. Paste it here on another device or browser to restore everything.</p>
+        </div>
+        <div class="dataform">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h3 class="sub" style="margin:0">Back up</h3>
+            <label for="bkOut" style="display:none">Backup code</label>
+            <textarea id="bkOut" readonly placeholder="Press Create backup code"></textarea>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn small" id="bkMake" type="button">Create backup code</button><button class="btn ghost small" id="bkCopy" type="button">Copy code</button><span id="bkMsg" style="font-size:.85rem;color:var(--muted)"></span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <h3 class="sub" style="margin:0">Restore</h3>
+            <label for="bkIn" style="display:none">Paste backup code</label>
+            <textarea id="bkIn" placeholder="Paste a backup code here"></textarea>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><button class="btn small" id="bkRestore" type="button">Restore from code</button><button class="btn ghost small" id="bkReset" type="button">Erase everything</button><span id="bkMsg2" style="font-size:.85rem;color:var(--muted)"></span></div>
+            <p style="font-size:.85rem;color:var(--muted)">Restoring replaces what is on this device. Erase asks you to press twice.</p>
+          </div>
+        </div>
+        <footer>Built for self study. Certifications are optional. The ISC2 free Certified in Cybersecurity program closed to new enrolments on 20 May 2026, so it is not listed as an option.</footer>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<button class="ntab" id="ntab" type="button" aria-controls="npanel" aria-expanded="false">Notes <b id="ncount">0</b></button>
+<aside class="npanel" id="npanel" aria-label="My notes" inert>
+  <div class="nhead"><h3>My notes</h3><button class="btn ghost small" id="nclose" type="button">Close</button></div>
+  <div class="ntools">
+    <label for="nsearch" style="display:none">Search notes</label>
+    <input id="nsearch" type="search" placeholder="Search your notes">
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="ncopy" type="button">Copy all notes</button><span id="ncopied" style="font-size:.85rem;color:var(--muted);align-self:center"></span></div>
+  </div>
+  <div class="nlist" id="nlist"></div>
+  <div class="nscratch"><label for="nscratch">Scratchpad, not tied to a week</label><textarea id="nscratch" rows="3" placeholder="Commands, ideas, questions to ask later"></textarea></div>
+</aside>
+
+<script>
+(function(){
+"use strict";
+var totH=function(p){var m=/(\d+)\s*to\s*(\d+)/.exec(p.hrs);return Math.round(p.weeks.length*(m?(Number(m[1])+Number(m[2]))/2:8)/5)*5};
+var L=function(k,t,u){return {k:k,t:t,u:u||""}};
+
+var SETUP=[
+ ["Install VirtualBox","https://www.virtualbox.org/"],
+ ["Download Kali Linux and build a VM (keep it isolated from your main system)","https://www.kali.org/get-kali/"],
+ ["Create free accounts: TryHackMe, Hack The Box, PortSwigger","https://tryhackme.com/"],
+ ["Make a notes folder with one file per week","" ],
+ ["Install Wireshark","https://www.wireshark.org/"]
+];
+
+var PATHS=[
+{id:"found",ico:"1",name:"Foundations",tag:"Core path 1",title:"Stand on solid ground",hrs:"8 to 10 h/week",
+ goal:"Start from absolute basics: what cybersecurity is, how computers and networks work, and how to use Linux. No prior background needed, technical or not.",
+ tools:[["CS50 Cybersecurity","https://cs50.harvard.edu/cybersecurity/"],["The Linux Command Line","https://linuxcommand.org/tlcl.php"],["TryHackMe Pre Security","https://tryhackme.com/path/outline/presecurity"],["OverTheWire Bandit","https://overthewire.org/wargames/bandit/"]],
+ weeks:[
+ {t:"What cybersecurity is",at:"CS50 Cybersecurity, NIST CSF",items:[L("Learn","CS50's Introduction to Cybersecurity","https://cs50.harvard.edu/cybersecurity/"),L("Read","NIST Cybersecurity Framework overview","https://www.nist.gov/cyberframework")],build:"Write the CIA triad (confidentiality, integrity, availability) in your own words, with one real example of each.",done:"You can name three cybersecurity domains and say what each one does."},
+ {t:"How a computer works",at:"CS50x",items:[L("Learn","CS50x: Introduction to Computer Science, first lectures","https://cs50.harvard.edu/x/")],build:"Explain to a friend what happens between pressing a key and seeing a letter on screen.",done:"You can describe CPU, memory, storage and file system in one sentence each."},
+ {t:"Linux and the command line",at:"Linux Command Line book, Bandit",items:[L("Read","The Linux Command Line (free book)","https://linuxcommand.org/tlcl.php"),L("Learn","Ubuntu: command line basics","https://ubuntu.com/tutorials/command-line-for-beginners"),L("Learn","Linux Journey","https://linuxjourney.com/"),L("Practice","OverTheWire Bandit, levels 0 to 10","https://overthewire.org/wargames/bandit/")],build:"Close every lesson. Use only ls, cd, cat, grep, chmod and sudo to find a file you hid yourself.",done:"You finished Bandit level 10 and used those commands without looking them up."},
+ {t:"Virtual machines and Windows basics",at:"VirtualBox, Kali",items:[L("Lab","Install VirtualBox","https://www.virtualbox.org/"),L("Lab","Build a Kali Linux VM","https://www.kali.org/get-kali/")],build:"Snapshot your Kali VM, break something on purpose, then restore the snapshot.",done:"Kali runs, and you can restore it to a clean state."},
+ {t:"Networking, part 1",at:"Practical Networking, NetAcad",items:[L("Learn","Practical Networking free series","https://www.practicalnetworking.net/"),L("Learn","Cisco Networking Academy free courses","https://www.netacad.com/courses/networking")],build:"Draw your home network on paper: devices, router, IP addresses, where DNS happens.",done:"You can explain IP address, DNS, port and the difference between TCP and UDP."},
+ {t:"Networking, part 2",at:"TryHackMe Pre Security, Wireshark",items:[L("Practice","TryHackMe Pre Security path","https://tryhackme.com/path/outline/presecurity"),L("Lab","Wireshark: capture your own traffic","https://www.wireshark.org/")],build:"Capture a page load in Wireshark and find the DNS query, the TCP handshake and one HTTP request.",done:"You captured your own traffic and can point out each of those three."},
+ {t:"Core security concepts",at:"Crypto, OWASP Top 10, SC-900",items:[L("Learn","Khan Academy: Cryptography","https://www.khanacademy.org/computing/computer-science/cryptography"),L("Read","OWASP Top 10","https://owasp.org/www-project-top-ten/"),L("Learn","Microsoft SC-900 learning path","https://learn.microsoft.com/en-us/credentials/certifications/security-compliance-and-identity-fundamentals/")],build:"For each OWASP Top 10 item, write one sentence on how it could hurt a real app.",done:"You can explain the OWASP Top 10 at a high level."},
+ {t:"First hands-on practice",at:"TryHackMe, picoCTF, Security+ videos",items:[L("Practice","TryHackMe free tier rooms","https://tryhackme.com/"),L("Practice","picoCTF, solve at least 5","https://picoctf.org/"),L("Learn","Professor Messer Security+ videos (optional)","https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/sy0-701-comptia-security-plus-course/")],build:"Write up one picoCTF solution so a beginner could follow it.",done:"You solved 5 picoCTF challenges and wrote one of them up."},
+ {t:"Threats, risk and everyday defences",at:"CISA, ATT&CK",items:[L("Read","CISA cybersecurity best practices","https://www.cisa.gov/topics/cybersecurity-best-practices"),L("Read","MITRE ATT&CK, browse the tactics only","https://attack.mitre.org/")],build:"Write a threat model for your own phone and email: what you protect, who might attack, what stops them.",done:"You can name five common threats and one defence for each."},
+ {t:"Choose your domain",at:"Role quiz and taster weeks",items:[L("Practice","Take the role quiz on this page, then build your route","#quiz"),L("Practice","Do week 1 of two domains you are curious about")],build:"Write one paragraph on which domain you will start with and why.",done:"You chose a main domain and can say why."}
+ ],
+ check:["I can explain the CIA triad in my own words","I can use basic Linux commands without looking them up","I finished Bandit through level 10","I have a Kali VM running","I can explain IP, DNS, ports, TCP and UDP","I captured my own traffic in Wireshark","I finished the TryHackMe Pre Security path","I solved at least 5 picoCTF challenges","I wrote a threat model for my own accounts","I chose a main domain"],
+ next:"off"},
+
+{id:"off",ico:"2",name:"Offensive Security",tag:"Core path 2",title:"Web, network, mobile and red team basics",hrs:"10 to 12 h/week",
+ goal:"Learn how a real engagement runs, then practise web, network and mobile testing and the thinking behind red team work. Finish by writing a proper report.",
+ tools:[["PortSwigger Web Security Academy","https://portswigger.net/web-security"],["Burp Suite Community","https://portswigger.net/burp/communitydownload"],["Nmap docs","https://nmap.org/book/man.html"],["MITRE ATT&CK","https://attack.mitre.org/"]],
+ weeks:[
+ {t:"Methodology and authorisation",at:"PTES, WSTG",items:[L("Read","Penetration Testing Execution Standard","https://pentest-standard.readthedocs.io/en/latest/"),L("Read","OWASP Web Security Testing Guide","https://owasp.org/www-project-web-security-testing-guide/")],build:"Write a one page scope document for a fake client: what is in scope, what is out, dates, and who signs.",done:"You can list the seven phases: scoping, recon, scanning, vulnerability identification, exploitation, post-exploitation, reporting."},
+ {t:"Web testing, part 1",at:"Burp Suite, PortSwigger",items:[L("Lab","Install Burp Suite Community","https://portswigger.net/burp/communitydownload"),L("Learn","PortSwigger Web Security Academy, first topics","https://portswigger.net/web-security")],build:"Intercept a login request in your own lab app and change one parameter.",done:"You can intercept and modify a request with Burp."},
+ {t:"Web testing, part 2",at:"Juice Shop, WebGoat",items:[L("Practice","OWASP Juice Shop","https://owasp.org/www-project-juice-shop/"),L("Practice","OWASP WebGoat","https://owasp.org/www-project-webgoat/"),L("Practice","PortSwigger labs, aim for 10","https://portswigger.net/web-security")],build:"Write down every Juice Shop challenge you solve with the Top 10 category it belongs to.",done:"You completed 10 PortSwigger labs and 3 Juice Shop challenges."},
+ {t:"Web testing, part 3",at:"Hacker101 CTF",items:[L("Practice","Hacker101 CTF","https://ctf.hacker101.com/")],build:"Pick a hard lab from last week and solve it again from a blank page.",done:"You solved a lab twice, the second time without notes."},
+ {t:"Network testing, part 1",at:"Nmap",items:[L("Learn","Nmap documentation","https://nmap.org/book/man.html"),L("Lab","Scan your own Kali VM and a VulnHub VM","https://www.vulnhub.com/")],build:"Scan a lab VM, then explain every line of the output.",done:"You can run and read an Nmap scan with confidence."},
+ {t:"Network testing, part 2",at:"Metasploit, GTFOBins",items:[L("Learn","Metasploit Unleashed","https://www.offsec.com/metasploit-unleashed/"),L("Read","GTFOBins","https://gtfobins.org/")],build:"Use one Metasploit module against a lab VM and note how the module is structured.",done:"You understand how Metasploit modules are organised."},
+ {t:"Network testing, part 3",at:"Hack The Box Starting Point",items:[L("Practice","Hack The Box Starting Point","https://www.hackthebox.com/hacker/starting-point"),L("Practice","TryHackMe rooms","https://tryhackme.com/")],build:"Finish two Starting Point machines. Write the path from first scan to final access.",done:"You completed Starting Point or an equivalent set."},
+ {t:"Mobile security, part 1",at:"OWASP MASTG and MASVS",items:[L("Read","OWASP Mobile Application Security project","https://owasp.org/www-project-mobile-app-security/")],build:"List the main risks for a mobile banking app in your own words.",done:"You can explain 3 OWASP Mobile risks."},
+ {t:"Mobile security, part 2",at:"MASTG exercises",items:[L("Read","MASTG test cases on storage and network traffic","https://owasp.org/www-project-mobile-app-security/")],build:"Read two MASTG tests and write what a tester checks and why.",done:"You can describe two mobile test cases end to end."},
+ {t:"Red team thinking",at:"MITRE ATT&CK",items:[L("Read","MITRE ATT&CK","https://attack.mitre.org/"),L("Lab","Atomic Red Team","https://atomicredteam.io/")],build:"Pick one ATT&CK technique and write how a defender would detect it.",done:"You can navigate ATT&CK and explain why red team work needs stricter authorisation."},
+ {t:"References worth bookmarking",at:"Cheat sheets and walkthroughs",items:[L("Read","PayloadsAllTheThings","https://github.com/swisskyrepo/PayloadsAllTheThings"),L("Read","HackTricks","https://book.hacktricks.wiki/"),L("Learn","IppSec walkthroughs","https://www.youtube.com/@ippsec")],build:"Watch one IppSec video, then solve the same box yourself.",done:"You can solve a lab box after watching only the method, not the commands."},
+ {t:"Reporting capstone",at:"Your own write-up",items:[L("Read","Re-read the PTES reporting section","https://pentest-standard.readthedocs.io/en/latest/")],build:"Write one finding with 5 parts: title and severity, location, reproduction steps, impact, recommendation.",done:"A stranger could reproduce and fix your finding from the write-up alone."}
+ ],
+ check:["I can list the seven phases of a penetration test","I understand why written scope comes first","I can intercept and modify a request in Burp","I completed 10 PortSwigger labs","I can run and read an Nmap scan","I finished Hack The Box Starting Point or similar","I can explain 3 OWASP Mobile risks","I can navigate MITRE ATT&CK","I wrote one finding in the 5 part format"],
+ next:"ad"},
+
+{id:"ad",ico:"A",name:"Active Directory",tag:"Offensive advanced",title:"Advanced track: identity and enterprise networks",hrs:"6 to 8 h/week",
+ goal:"Go deep on the identity system behind most corporate networks. Understand how it is built, how attack paths form from small misconfigurations, and how defenders close them. Lab only.",
+ tools:[["The Hacker Recipes","https://www.thehacker.recipes/"],["BloodHound","https://github.com/SpecterOps/BloodHound"],["Impacket","https://github.com/fortra/impacket"],["GOAD lab","https://github.com/Orange-Cyberdefense/GOAD"]],
+ weeks:[
+ {t:"The defender's view first",at:"Microsoft AD hardening",items:[L("Read","Microsoft: best practices for securing Active Directory","https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory")],build:"List five hardening rules and the attack each one blocks.",done:"You know what a well-run AD looks like."},
+ {t:"Domains, forests, trusts, GPO",at:"The Hacker Recipes",items:[L("Read","The Hacker Recipes, AD overview","https://www.thehacker.recipes/")],build:"Draw a two-domain forest with a trust, an OU tree and a privileged group.",done:"You can explain domain, forest, trust, OU and Group Policy."},
+ {t:"Kerberos and NTLM",at:"adsecurity.org",items:[L("Read","adsecurity.org","https://adsecurity.org/")],build:"Draw the Kerberos flow: TGT, service ticket, who talks to whom.",done:"You can explain what a TGT and a service ticket are."},
+ {t:"Build your isolated lab",at:"GOAD",items:[L("Lab","Deploy GOAD or a smaller variant, isolated from the internet","https://github.com/Orange-Cyberdefense/GOAD")],build:"Deploy the lab and confirm it has no route to your home network or the internet.",done:"The lab runs and is isolated."},
+ {t:"Map attack paths with BloodHound",at:"BloodHound",items:[L("Lab","BloodHound Community Edition","https://github.com/SpecterOps/BloodHound")],build:"Collect data from your lab and find a path to Domain Admin.",done:"You mapped one attack path in your lab."},
+ {t:"Protocols with Impacket",at:"Impacket",items:[L("Lab","Impacket toolkit","https://github.com/fortra/impacket")],build:"Use Impacket to talk to your lab domain controller and describe each request.",done:"You used Impacket against your lab DC."},
+ {t:"Roasting attacks",at:"ired.team, Hacker Recipes",items:[L("Read","ired.team","https://www.ired.team/"),L("Read","The Hacker Recipes, Kerberos section","https://www.thehacker.recipes/")],build:"In your lab, explain how Kerberoasting differs from AS-REP roasting, then note the defence for each.",done:"You can explain both and their fixes."},
+ {t:"Delegation and ACL abuse",at:"ired.team, adsecurity.org",items:[L("Read","ired.team notes on delegation and ACLs","https://www.ired.team/"),L("Read","adsecurity.org delegation articles","https://adsecurity.org/")],build:"Find one ACL or delegation weakness in your lab and write its fix.",done:"You can name 3 real misconfigurations and how they are abused."},
+ {t:"Pass-the-hash and pass-the-ticket",at:"Concepts and defences",items:[L("Read","The Hacker Recipes, credential reuse","https://www.thehacker.recipes/")],build:"Explain both in your own words, plus one control that limits each.",done:"You can explain both techniques and the controls against them."},
+ {t:"Use the mindmaps",at:"Orange Cyberdefense mindmaps",items:[L("Read","AD pentest mindmaps","https://orange-cyberdefense.github.io/ocd-mindmaps/")],build:"Pick one branch of the mindmap you have not tried and test it in your lab.",done:"You can use the mindmap as a checklist."},
+ {t:"End-to-end lab run",at:"GOAD",items:[L("Lab","Compromise your lab domain end to end","https://github.com/Orange-Cyberdefense/GOAD")],build:"Take notes at every step so you can replay the path later.",done:"You compromised the lab and documented every step."},
+ {t:"Report and remediate",at:"Write-up",items:[L("Read","Microsoft hardening guide, for the fixes","https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/best-practices-for-securing-active-directory")],build:"Write a report: attack path, impact, and a fix for every step.",done:"A defender could close every hole from your report."}
+ ],
+ check:["I can explain Kerberos, TGT and service tickets","I can tell Kerberoasting from AS-REP roasting","I deployed an isolated AD lab","I mapped an attack path with BloodHound","I explained pass-the-hash and pass-the-ticket","I used Impacket against my lab DC","I can describe 3 real AD misconfigurations","I compromised my lab end to end and documented the path"],
+ next:"wifi"},
+
+{id:"wifi",ico:"W",name:"Wi-Fi Security",tag:"Offensive advanced",title:"Advanced track: wireless assessment",hrs:"6 to 8 h/week",
+ goal:"Understand how wireless security works and where it breaks. Start in a software-only lab, so you do not need special hardware. Test only networks you own.",
+ tools:[["Wi-Fi Alliance security","https://www.wi-fi.org/discover-wi-fi/security"],["Aircrack-ng docs","https://www.aircrack-ng.org/documentation.html"],["Kismet","https://www.kismetwireless.net/"],["WiFiChallenge Lab","https://lab.wifichallenge.com/"]],
+ weeks:[
+ {t:"Standards and encryption",at:"Wi-Fi Alliance",items:[L("Read","Wi-Fi Alliance: Discover Wi-Fi Security","https://www.wi-fi.org/discover-wi-fi/security")],build:"Write one paragraph on why WEP is broken and what WPA2 and WPA3 changed.",done:"You can compare WEP, WPA2 and WPA3."},
+ {t:"The four-way handshake",at:"Aircrack-ng docs",items:[L("Read","Aircrack-ng documentation","https://www.aircrack-ng.org/documentation.html")],build:"Draw the handshake between client and access point.",done:"You can explain why the handshake matters for assessment."},
+ {t:"Software-only lab",at:"WiFiChallenge Lab",items:[L("Lab","WiFiChallenge Lab, free account","https://lab.wifichallenge.com/")],build:"Finish the first exercises and note what each one demonstrates.",done:"You completed exercises in a simulated Wi-Fi lab."},
+ {t:"Passive monitoring",at:"Kismet",items:[L("Lab","Kismet","https://www.kismetwireless.net/")],build:"Survey the networks around you passively and list what Kismet shows.",done:"You can read a Kismet survey like a defender."},
+ {t:"Personal vs Enterprise",at:"PSK and 802.1X",items:[L("Read","Wi-Fi Alliance security pages","https://www.wi-fi.org/discover-wi-fi/security")],build:"Make a table: PSK vs 802.1X, who authenticates, where credentials live, main risk.",done:"You can explain WPA2/3 Personal vs Enterprise."},
+ {t:"Rogue access points",at:"Evil twin concept",items:[L("Read","Aircrack-ng documentation","https://www.aircrack-ng.org/documentation.html")],build:"Write how an evil twin works and three ways a user or admin can spot one.",done:"You can describe a rogue AP attack and its defences."},
+ {t:"Client-side risks",at:"Why clients are the easier target",items:[L("Lab","Repeat a client-side exercise in WiFiChallenge Lab","https://lab.wifichallenge.com/")],build:"List the settings on a phone or laptop that reduce wireless risk.",done:"You can explain client-side risk."},
+ {t:"Assess your own network",at:"Aircrack-ng",items:[L("Lab","Aircrack-ng suite, on your own network only","https://www.aircrack-ng.org/documentation.html")],build:"Assess your own home network, then write findings and fixes.",done:"You tested only networks you own and wrote a report."}
+ ],
+ check:["I can compare WEP, WPA2 and WPA3","I can explain the four-way handshake","I can explain Personal vs Enterprise","I can describe an evil twin attack","I finished exercises in a software Wi-Fi lab","I know the core functions of the Aircrack-ng suite","I only tested networks I own or am authorised to test"],
+ next:"pivot"},
+
+{id:"advweb",color:"off",ico:"W+",name:"Advanced Web and API",tag:"Offensive advanced",title:"Beyond the Top 10",hrs:"8 to 10 h/week",
+ goal:"Test modern applications built on APIs. Learn where authentication, authorisation and business logic break. Finish the Offensive path first.",
+ tools:[["PortSwigger API testing","https://portswigger.net/web-security/api-testing"],["OWASP API Security Top 10","https://api-security.owasp.org/"],["crAPI lab","https://github.com/OWASP/crAPI"],["Burp Suite Community","https://portswigger.net/burp/communitydownload"]],
+ weeks:[
+ {t:"How APIs are tested",at:"PortSwigger",items:[L("Learn","PortSwigger: API testing","https://portswigger.net/web-security/api-testing")],build:"Write how an API differs from a web page from a tester's point of view.",done:"You can map the endpoints and parameters of an API."},
+ {t:"The API risk list",at:"OWASP API Security Top 10",items:[L("Read","OWASP API Security Top 10","https://api-security.owasp.org/")],build:"For each risk, write one realistic example for a banking app.",done:"You can explain all ten API risks."},
+ {t:"Practise on a vulnerable API",at:"crAPI",items:[L("Lab","OWASP crAPI, run in an isolated VM","https://github.com/OWASP/crAPI")],build:"Find two access control problems in crAPI and note how you proved each.",done:"You found and explained two API weaknesses in your lab."},
+ {t:"Advanced server-side topics",at:"PortSwigger labs",items:[L("Practice","PortSwigger advanced topics, pick 5 labs","https://portswigger.net/web-security")],build:"Pick one hard lab, solve it, then solve it again without notes.",done:"You solved a hard lab twice."},
+ {t:"Authentication and logic flaws",at:"PortSwigger labs",items:[L("Practice","Authentication and business logic labs","https://portswigger.net/web-security")],build:"Write how a logic flaw differs from a technical bug.",done:"You can explain why logic flaws escape scanners."},
+ {t:"Chain findings into impact",at:"Reporting",items:[L("Read","OWASP Web Security Testing Guide","https://owasp.org/www-project-web-security-testing-guide/")],build:"Write one report where two small findings combine into a high severity issue.",done:"Your report explains the chain and the fix for each link."}
+ ],
+ check:["I can map an API's endpoints","I can explain the OWASP API Top 10","I found issues in crAPI","I solved advanced PortSwigger labs","I wrote a chained finding report"],
+ next:"pivot"},
+
+{id:"advmobile",color:"off",ico:"M+",name:"Advanced Mobile",tag:"Offensive advanced",title:"Inside Android and iOS apps",hrs:"8 to 10 h/week",
+ goal:"Go from reading the mobile guide to testing apps. Analyse code, watch runtime behaviour and check data storage and traffic. Use practice apps and your own apps only.",
+ tools:[["OWASP MASTG","https://mas.owasp.org/MASTG/"],["MAS Crackmes","https://mas.owasp.org/crackmes/"],["jadx","https://github.com/skylot/jadx"],["Frida","https://frida.re/docs/home/"]],
+ weeks:[
+ {t:"The mobile test guide in depth",at:"MASTG",items:[L("Read","OWASP MASTG","https://mas.owasp.org/MASTG/")],build:"Choose five MASTG tests and write what each checks.",done:"You can describe a mobile test plan."},
+ {t:"Static analysis",at:"jadx",items:[L("Lab","jadx decompiler on a practice app","https://github.com/skylot/jadx")],build:"Decompile a practice app and list hard-coded secrets or weak settings you find.",done:"You can read decompiled code and spot risks."},
+ {t:"Runtime analysis",at:"Frida",items:[L("Lab","Frida documentation","https://frida.re/docs/home/")],build:"Observe one function call in a practice app with Frida.",done:"You observed runtime behaviour in a lab app."},
+ {t:"Practice apps",at:"MAS Crackmes",items:[L("Practice","MAS Crackmes, practice apps","https://mas.owasp.org/crackmes/")],build:"Solve the first challenge and write the method.",done:"You solved a crackme and wrote it up."},
+ {t:"Traffic and storage",at:"Burp, device storage",items:[L("Lab","Intercept test app traffic with Burp","https://portswigger.net/burp/communitydownload")],build:"Check what a practice app stores on the device and sends over the network.",done:"You can judge data storage and transport security."},
+ {t:"Report against a standard",at:"MASVS",items:[L("Read","OWASP Mobile Application Security","https://owasp.org/www-project-mobile-app-security/")],build:"Write a short report mapping findings to MASVS areas.",done:"Your findings map to a recognised standard."}
+ ],
+ check:["I can describe a mobile test plan","I decompiled and reviewed a practice app","I observed runtime behaviour with Frida","I solved a crackme","I wrote a MASVS-mapped report"],
+ next:"pivot"},
+
+{id:"cloudpt",color:"off",ico:"C+",name:"Cloud Penetration Testing",tag:"Offensive advanced",title:"Assess cloud accounts with permission",hrs:"6 to 8 h/week",
+ goal:"Learn how cloud environments are assessed: identity, storage, serverless and permissions. Use your own accounts and training games only, and always clean up.",
+ tools:[["ATT&CK cloud matrix","https://attack.mitre.org/matrices/enterprise/cloud/"],["flAWS 2","http://flaws2.cloud/"],["CloudGoat","https://github.com/RhinoSecurityLabs/cloudgoat"],["Pacu","https://github.com/RhinoSecurityLabs/pacu"]],
+ weeks:[
+ {t:"Cloud attack surface",at:"ATT&CK cloud matrix",items:[L("Read","MITRE ATT&CK cloud matrix","https://attack.mitre.org/matrices/enterprise/cloud/")],build:"List the cloud tactics and one example of each.",done:"You can explain how cloud attacks differ from on-premises ones."},
+ {t:"Training game with attacker and defender paths",at:"flAWS 2",items:[L("Practice","flAWS 2, attacker and defender paths","http://flaws2.cloud/")],build:"Finish the levels and write the defender fix for each.",done:"You can name the fix for every level."},
+ {t:"Lab scenarios in your own account",at:"CloudGoat",items:[L("Lab","CloudGoat, only in an account you own","https://github.com/RhinoSecurityLabs/cloudgoat")],build:"Run one scenario, then tear it all down and check the bill.",done:"You ran a scenario and cleaned up fully."},
+ {t:"Permission analysis",at:"Pacu",items:[L("Lab","Pacu, on your own lab account","https://github.com/RhinoSecurityLabs/pacu")],build:"Enumerate what a test identity can do and list the risky permissions.",done:"You can map the permissions of one identity."},
+ {t:"The defender's mirror",at:"AWS security pillar",items:[L("Read","AWS Well-Architected: Security Pillar","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html")],build:"For each weakness you found, write the control that prevents it.",done:"Every finding has a preventive and a detective control."},
+ {t:"Cloud assessment report",at:"Your write-up",items:[L("Read","Prowler, for an automated comparison","https://github.com/prowler-cloud/prowler")],build:"Write a cloud assessment report for your lab account, with ranked fixes.",done:"A cloud team could fix the issues from your report."}
+ ],
+ check:["I can explain how cloud attacks differ","I finished flAWS 2","I ran and cleaned up a CloudGoat scenario","I analysed identity permissions","I wrote a cloud assessment report"],
+ next:"pivot"},
+
+{id:"purple",color:"off",ico:"P+",name:"Purple Team and Adversary Emulation",tag:"Offensive advanced",title:"Test defences with agreed, safe simulations",hrs:"6 to 8 h/week",
+ goal:"Work with defenders. Plan agreed simulations of attacker behaviour in a lab, check what gets detected and fix the gaps. No malware development and no evasion work.",
+ tools:[["Center for Threat-Informed Defense","https://ctid.mitre.org/"],["Atomic Red Team","https://atomicredteam.io/"],["Caldera","https://caldera.apache.org/"],["VECTR","https://github.com/SecurityRiskAdvisors/VECTR"]],
+ weeks:[
+ {t:"Why purple teaming",at:"CTID",items:[L("Read","Center for Threat-Informed Defense","https://ctid.mitre.org/")],build:"Explain how red, blue and purple teams differ.",done:"You can explain why shared goals beat separate scorecards."},
+ {t:"Plan an emulation",at:"ATT&CK",items:[L("Read","MITRE ATT&CK","https://attack.mitre.org/")],build:"Write a plan for five techniques, with scope, safety limits and sign-off.",done:"Your plan has a written scope and stop conditions."},
+ {t:"Simple test cases",at:"Atomic Red Team",items:[L("Lab","Atomic Red Team, benign tests in an isolated lab","https://atomicredteam.io/")],build:"Run two harmless tests in your lab and note what was logged.",done:"You know what evidence each test leaves."},
+ {t:"Automated emulation",at:"Caldera",items:[L("Lab","Caldera, in an isolated lab","https://caldera.apache.org/")],build:"Run one planned operation in your lab and review the result.",done:"You ran a planned, scoped operation."},
+ {t:"Track results",at:"VECTR",items:[L("Lab","VECTR, tracking detections","https://github.com/SecurityRiskAdvisors/VECTR")],build:"Record each test with outcome: detected, logged only or missed.",done:"You have a table of coverage and gaps."},
+ {t:"Close the loop",at:"Sigma",items:[L("Read","Sigma rules","https://github.com/SigmaHQ/sigma")],build:"Write or tune one detection for a missed test, then retest.",done:"A missed test is now detected."},
+ {t:"Purple team report",at:"Your write-up",items:[L("Read","MITRE D3FEND, for countermeasure language","https://d3fend.mitre.org/")],build:"Write a report: plan, results, gaps, fixes, retest outcome.",done:"Defenders can act on every gap."}
+ ],
+ check:["I can explain red, blue and purple teams","I wrote a scoped emulation plan","I ran benign tests in a lab","I tracked coverage and gaps","I improved one detection and retested"],
+ next:"pivot"},
+
+{id:"blue",ico:"B",name:"Defensive / SOC",tag:"Specialisation: blue team",title:"Detect, triage and respond",hrs:"6 to 8 h/week",
+ goal:"Learn to watch a network, read logs, write detections and handle an incident. This is the defender's side of everything the offensive paths teach.",
+ tools:[["NIST incident response guide","https://csrc.nist.gov/pubs/sp/800/61/r3/final"],["Wazuh docs","https://documentation.wazuh.com/current/getting-started/index.html"],["Security Onion","https://securityonionsolutions.com/software"],["Sigma rules","https://github.com/SigmaHQ/sigma"]],
+ weeks:[
+ {t:"The SOC and the incident lifecycle",at:"NIST SP 800-61 Rev. 3",items:[L("Read","NIST incident response recommendations","https://csrc.nist.gov/pubs/sp/800/61/r3/final")],build:"Draw the incident lifecycle and mark who does what in a small SOC.",done:"You can describe the stages of an incident from detection to lessons learned."},
+ {t:"Logs that matter",at:"Windows, Linux and web logs",items:[L("Learn","Wazuh: getting started","https://documentation.wazuh.com/current/getting-started/index.html")],build:"List five log sources in your lab and what each one tells a defender.",done:"You can explain what a log source is and why a SIEM collects it."},
+ {t:"Network monitoring",at:"Security Onion, Wireshark",items:[L("Lab","Security Onion, free platform","https://securityonionsolutions.com/software"),L("Lab","Wireshark","https://www.wireshark.org/")],build:"Capture normal traffic in your lab, then describe what unusual would look like.",done:"You know what normal looks like on your own network."},
+ {t:"Detection rules with Sigma",at:"Sigma",items:[L("Read","SigmaHQ rule repository","https://github.com/SigmaHQ/sigma")],build:"Read three Sigma rules and write what behaviour each one catches.",done:"You can read a Sigma rule and explain it."},
+ {t:"Alert triage",at:"TryHackMe SOC Level 1",items:[L("Practice","TryHackMe SOC Level 1 path (some rooms may need a subscription)","https://tryhackme.com/path/outline/soclevel1")],build:"For one alert, write: true positive or false positive, why, and next step.",done:"You can triage an alert in a short written note."},
+ {t:"Stand up Wazuh in your lab",at:"Wazuh",items:[L("Lab","Deploy Wazuh in an isolated VM","https://documentation.wazuh.com/current/getting-started/index.html")],build:"Send logs from your Kali VM to Wazuh and find them in the dashboard.",done:"Your lab sends logs to a working monitor."},
+ {t:"Map detections to ATT&CK",at:"MITRE ATT&CK",items:[L("Read","MITRE ATT&CK","https://attack.mitre.org/")],build:"Pick five techniques and list which log would reveal each.",done:"You can map a detection to an ATT&CK technique."},
+ {t:"Investigation practice",at:"Blue Team Labs Online",items:[L("Practice","Blue Team Labs Online, free tier","https://blueteamlabs.online/")],build:"Finish one investigation and write the timeline of events.",done:"You produced a clear timeline from raw evidence."},
+ {t:"Test your detections safely",at:"Atomic Red Team in your lab",items:[L("Lab","Atomic Red Team, benign test cases in an isolated lab","https://atomicredteam.io/")],build:"Run one harmless test in your lab and check whether your monitor alerts.",done:"You confirmed one detection works, or you fixed it."},
+ {t:"Incident report capstone",at:"Your write-up",items:[L("Read","NIST incident response guide, for report structure","https://csrc.nist.gov/pubs/sp/800/61/r3/final")],build:"Write an incident report: summary, timeline, impact, root cause, actions.",done:"A manager could act on your report in five minutes."}
+ ],
+ check:["I can describe the incident lifecycle","I can name key log sources and what they show","I deployed a monitoring tool in my lab","I can read a Sigma rule","I can triage an alert in writing","I can map a detection to ATT&CK","I wrote an incident report"],
+ next:"pivot"},
+
+{id:"ti",ico:"T",name:"Threat Intel and DFIR",tag:"Domain: intelligence and forensics",title:"Understand adversaries and investigate incidents",hrs:"6 to 8 h/week",
+ goal:"Turn raw evidence and reports into intelligence people can act on, and learn the basics of forensic investigation. Good for analytical, research-minded learners.",
+ tools:[["ATT&CK training","https://attack.mitre.org/resources/learn-more-about-attack/training/"],["MISP","https://www.misp-project.org/"],["OpenCTI","https://docs.opencti.io/latest/"],["Volatility 3","https://volatility3.readthedocs.io/en/latest/"]],
+ weeks:[
+ {t:"What intelligence is",at:"ATT&CK training",items:[L("Learn","MITRE ATT&CK training courses","https://attack.mitre.org/resources/learn-more-about-attack/training/")],build:"Write the difference between data, information and intelligence with one example.",done:"You can explain the three and who uses intelligence."},
+ {t:"Adversary behaviour with ATT&CK",at:"MITRE ATT&CK",items:[L("Read","MITRE ATT&CK","https://attack.mitre.org/")],build:"Pick one public threat group page and summarise its techniques in ten lines.",done:"You can read a group page and extract what matters."},
+ {t:"Sharing indicators with MISP",at:"MISP",items:[L("Lab","MISP open source threat intelligence platform","https://www.misp-project.org/")],build:"Create a test event in a local MISP and attach three indicators.",done:"You can record and tag indicators in a platform."},
+ {t:"Knowledge graphs with OpenCTI",at:"OpenCTI",items:[L("Lab","OpenCTI documentation","https://docs.opencti.io/latest/")],build:"Model one fictional campaign: actor, tools, targets, relationships.",done:"You can show how intel objects link together."},
+ {t:"Write an intelligence report",at:"Your own report",items:[L("Read","SANS cheat sheets list, for reference","https://www.sans.org/blog/the-ultimate-list-of-sans-cheat-sheets/")],build:"Write a one page brief on one public threat: who, how, impact, what to do.",done:"A non-technical reader understands the action to take."},
+ {t:"Disk forensics basics",at:"Autopsy",items:[L("Lab","Autopsy, free forensics platform","https://www.autopsy.com/")],build:"Open a practice disk image from a legal training source and list the files you recovered.",done:"You can load an image and find artefacts in it."},
+ {t:"Memory forensics basics",at:"Volatility 3",items:[L("Lab","Volatility 3 documentation","https://volatility3.readthedocs.io/en/latest/")],build:"Analyse a practice memory image and list running processes.",done:"You can list processes from a memory image."},
+ {t:"Build a timeline",at:"Evidence to story",items:[L("Read","NIST incident response guide","https://csrc.nist.gov/pubs/sp/800/61/r3/final")],build:"Combine disk, memory and log findings into one timeline.",done:"Your timeline reads as a clear story with evidence for each step."},
+ {t:"Chain of custody and ethics",at:"Handling evidence",items:[L("Read","NIST incident response guide, evidence handling parts","https://csrc.nist.gov/pubs/sp/800/61/r3/final")],build:"Write a one page evidence handling checklist.",done:"You can explain chain of custody and why it matters."},
+ {t:"Capstone: investigate and report",at:"Your write-up",items:[L("Lab","Pick a practice case from a platform you are allowed to use","https://blueteamlabs.online/")],build:"Investigate one case and write both an intel brief and a forensic summary.",done:"Both documents are clear, sourced and actionable."}
+ ],
+ check:["I can explain data vs information vs intelligence","I can use ATT&CK to describe a threat group","I recorded indicators in MISP","I modelled a campaign in OpenCTI","I can load a disk image in Autopsy","I can list processes from a memory image","I wrote an intelligence brief"],
+ next:"pivot"},
+
+{id:"devsec",ico:"D",name:"DevSecOps",tag:"Domain: secure software delivery",title:"Build security into the pipeline",hrs:"6 to 8 h/week",
+ goal:"Make software safe by default. Scan code, dependencies and containers automatically, and keep the supply chain trustworthy. You need basic coding and Git.",
+ tools:[["OWASP DevSecOps Guideline","https://owasp.org/www-project-devsecops-guideline/"],["Semgrep docs","https://docs.semgrep.dev/"],["Trivy","https://trivy.dev/"],["OWASP SAMM","https://owaspsamm.org/"]],
+ weeks:[
+ {t:"Shift left",at:"OWASP DevSecOps Guideline",items:[L("Read","OWASP DevSecOps Guideline","https://owasp.org/www-project-devsecops-guideline/")],build:"Draw a delivery pipeline and mark where each security check belongs.",done:"You can explain what shift left means."},
+ {t:"Secure coding basics",at:"OWASP Cheat Sheets",items:[L("Read","OWASP Cheat Sheet Series","https://cheatsheetseries.owasp.org/")],build:"Read three cheat sheets and fix one insecure snippet in your own code.",done:"You can name three secure coding rules and why they matter."},
+ {t:"Static analysis",at:"Semgrep",items:[L("Lab","Semgrep documentation","https://docs.semgrep.dev/")],build:"Scan one of your own projects and triage every finding.",done:"You can tell a real finding from noise."},
+ {t:"Dependencies and secrets",at:"Trivy",items:[L("Lab","Trivy scanner","https://trivy.dev/")],build:"Scan a project for vulnerable dependencies and exposed secrets, then fix one.",done:"You scanned and fixed at least one real issue."},
+ {t:"Container security",at:"Trivy on images",items:[L("Lab","Scan a container image with Trivy","https://trivy.dev/")],build:"Build a small image, scan it, then shrink and rescan it.",done:"Your second scan shows fewer findings."},
+ {t:"Automate in CI",at:"Pipeline",items:[L("Lab","Add Semgrep and Trivy to a CI workflow in your own repository","https://docs.semgrep.dev/")],build:"Make your pipeline fail when a high severity issue appears.",done:"A bad commit gets blocked by your pipeline."},
+ {t:"Supply chain security",at:"SLSA",items:[L("Read","SLSA framework","https://slsa.dev/")],build:"Write what each SLSA level protects against in your own words.",done:"You can explain build provenance."},
+ {t:"Kubernetes security",at:"Kubernetes docs",items:[L("Read","Kubernetes security concepts","https://kubernetes.io/docs/concepts/security/")],build:"List five settings that harden a cluster and what each prevents.",done:"You can explain pod, network and access controls at a basic level."},
+ {t:"Measure maturity",at:"OWASP SAMM",items:[L("Read","OWASP SAMM","https://owaspsamm.org/")],build:"Score a small project against two SAMM practices.",done:"You can explain how teams measure progress."},
+ {t:"Capstone: secure pipeline",at:"Your project",items:[L("Lab","Combine all tools in one repository","https://owasp.org/www-project-devsecops-guideline/")],build:"Ship a small app with automated scans, a fix log and a short README.",done:"Someone else can read your README and trust the pipeline."}
+ ],
+ check:["I can explain shift left","I scanned code with a static analysis tool","I scanned dependencies and containers","I added scans to a CI pipeline","I can explain build provenance","I fixed real findings in my own project"],
+ next:"pivot"},
+
+{id:"ai",ico:"AI",name:"AI Security",tag:"Domain: securing AI systems",title:"Attack and defend models and agents",hrs:"6 to 8 h/week",
+ goal:"Understand how AI systems work and how they fail. Learn the main risks of language model applications, test them in a lab and apply recognised frameworks.",
+ tools:[["OWASP LLM Top 10","https://genai.owasp.org/llm-top-10/"],["MITRE ATLAS","https://atlas.mitre.org/"],["OWASP AI Exchange","https://owaspai.org/"],["NIST AI RMF","https://www.nist.gov/itl/ai-risk-management-framework"]],
+ weeks:[
+ {t:"Machine learning basics",at:"fast.ai",items:[L("Learn","fast.ai practical deep learning, free","https://course.fast.ai/")],build:"Train a tiny model and explain training, validation and test data.",done:"You can explain how a model learns from data."},
+ {t:"Hands-on with data",at:"Kaggle Learn",items:[L("Learn","Kaggle Learn short courses","https://www.kaggle.com/learn")],build:"Finish one course and keep the notebook.",done:"You have a working notebook you wrote yourself."},
+ {t:"How language models work",at:"Hugging Face LLM course",items:[L("Learn","Hugging Face LLM course, free","https://huggingface.co/learn/llm-course")],build:"Explain tokens, context window and fine-tuning in plain words.",done:"You can describe what happens when a model answers a prompt."},
+ {t:"The OWASP LLM Top 10",at:"OWASP Gen AI Security",items:[L("Read","OWASP Top 10 for LLM applications","https://genai.owasp.org/llm-top-10/")],build:"For each risk, write one realistic example in a chatbot product.",done:"You can explain all ten risks."},
+ {t:"Adversary tactics against AI",at:"MITRE ATLAS",items:[L("Read","MITRE ATLAS","https://atlas.mitre.org/")],build:"Pick one ATLAS technique and compare it with a matching ATT&CK technique.",done:"You can use ATLAS the way you use ATT&CK."},
+ {t:"Scan a model in your lab",at:"garak",items:[L("Lab","garak, LLM vulnerability scanner","https://github.com/NVIDIA/garak")],build:"Run garak against a model you run yourself and read the report.",done:"You ran a scan and can explain one finding."},
+ {t:"Red team tooling",at:"PyRIT",items:[L("Lab","PyRIT, Microsoft's AI red teaming toolkit","https://github.com/microsoft/PyRIT")],build:"Set up PyRIT against your own lab model and run one test.",done:"You ran a structured test against your own model."},
+ {t:"Prompt injection and agents",at:"OWASP AI Exchange",items:[L("Read","OWASP AI Exchange","https://owaspai.org/")],build:"Threat model a small agent with tools: list what an attacker could make it do.",done:"You can explain why agents raise the stakes."},
+ {t:"Defence patterns",at:"Google SAIF",items:[L("Read","Google Secure AI Framework","https://safety.google/safety/saif/")],build:"Choose three controls that reduce your agent's risk and explain each.",done:"You can propose layered controls, not one fix."},
+ {t:"Risk management",at:"NIST AI RMF",items:[L("Read","NIST AI Risk Management Framework","https://www.nist.gov/itl/ai-risk-management-framework")],build:"Map your threat model to the framework's functions.",done:"You can speak the language of AI risk governance."},
+ {t:"Review a real design",at:"Practice review",items:[L("Read","OWASP LLM Top 10, as a review checklist","https://genai.owasp.org/llm-top-10/")],build:"Review a public AI product description and list likely risks.",done:"Your review is specific and evidence based."},
+ {t:"Capstone: assess an AI app",at:"Your lab",items:[L("Lab","Build a small chatbot, then test and harden it","https://github.com/NVIDIA/garak")],build:"Threat model, test, fix, retest and write a short report for your own lab app.",done:"Your report shows a risk before and after the fix."}
+ ],
+ check:["I can explain how a model is trained","I can explain how a language model answers","I can explain all OWASP LLM Top 10 risks","I can use ATLAS","I ran garak against my own lab model","I threat modelled an agent","I wrote an AI security report"],
+ next:"pivot"},
+
+{id:"grc",ico:"G",name:"GRC",tag:"Domain: governance, risk, compliance",title:"Policies, risk and assurance",hrs:"5 to 7 h/week",
+ goal:"Help organisations manage security risk through standards, policy and audits. Light on tools, heavy on reading, writing and judgement. Strong demand in banks, telecoms and government.",
+ tools:[["NIST CSF","https://www.nist.gov/cyberframework"],["NIST RMF","https://csrc.nist.gov/projects/risk-management/about-rmf"],["ISO 27001","https://www.iso.org/standard/27001"],["Nigeria Data Protection Commission","https://ndpc.gov.ng/"]],
+ weeks:[
+ {t:"What GRC is",at:"NIST CSF",items:[L("Read","NIST Cybersecurity Framework","https://www.nist.gov/cyberframework")],build:"Explain governance, risk and compliance with one example each.",done:"You can describe how the three differ and connect."},
+ {t:"Risk thinking",at:"NIST RMF",items:[L("Read","NIST Risk Management Framework","https://csrc.nist.gov/projects/risk-management/about-rmf")],build:"Score five risks for a fictional company by likelihood and impact.",done:"You can rate a risk and justify the rating."},
+ {t:"ISO 27001",at:"ISO/IEC 27001",items:[L("Read","ISO/IEC 27001 overview","https://www.iso.org/standard/27001")],build:"Explain what an ISMS is and what a certification audit checks.",done:"You can describe the ISO 27001 approach."},
+ {t:"Control catalogues",at:"NIST SP 800-53",items:[L("Read","NIST SP 800-53 Rev. 5","https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final")],build:"Pick five controls and write how a small company would implement each.",done:"You can read and use a control catalogue."},
+ {t:"Practical baselines",at:"CIS Controls",items:[L("Read","CIS Critical Security Controls","https://www.cisecurity.org/controls")],build:"Compare CIS Controls with ISO 27001 in a short table.",done:"You can explain why companies use more than one standard."},
+ {t:"Privacy and data law",at:"Nigeria Data Protection Act",items:[L("Read","Nigeria Data Protection Commission","https://ndpc.gov.ng/")],build:"List the duties of a data controller in your own words.",done:"You can explain core data protection duties."},
+ {t:"Cloud assurance",at:"CSA Cloud Controls Matrix",items:[L("Read","Cloud Controls Matrix","https://cloudsecurityalliance.org/research/cloud-controls-matrix")],build:"Map three cloud risks to CCM controls.",done:"You can assess a cloud provider against a matrix."},
+ {t:"Build a risk register",at:"Hands-on",items:[L("Read","NIST RMF, for the structure","https://csrc.nist.gov/projects/risk-management/about-rmf")],build:"Create a risk register of ten entries with owner, rating and treatment.",done:"Your register is usable by a manager."},
+ {t:"Write a policy",at:"Hands-on",items:[L("Read","CIS Controls, as a source of requirements","https://www.cisecurity.org/controls")],build:"Write a two page access control policy in plain language.",done:"Staff could follow it without a lawyer."},
+ {t:"Capstone: gap assessment",at:"Your report",items:[L("Read","NIST CSF, as your assessment frame","https://www.nist.gov/cyberframework")],build:"Assess a fictional company against CSF and write the top five gaps with fixes.",done:"Your report ranks gaps and recommends next steps."}
+ ],
+ check:["I can explain governance, risk and compliance","I can score and justify a risk","I can describe an ISMS","I can read a control catalogue","I can explain core data protection duties","I built a risk register","I completed a gap assessment"],
+ next:"pivot"},
+
+{id:"eng",ico:"E",name:"Security Engineering and Cloud",tag:"Domain: infrastructure and cloud",title:"Design, harden and automate secure infrastructure",hrs:"6 to 8 h/week",
+ goal:"Build systems that are secure by design. Harden servers, design networks with zero trust, manage cloud access and describe infrastructure as code. Good for people who like building.",
+ tools:[["AWS security pillar","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html"],["CIS Benchmarks","https://www.cisecurity.org/cis-benchmarks"],["Terraform tutorials","https://developer.hashicorp.com/terraform/tutorials"],["Prowler","https://github.com/prowler-cloud/prowler"]],
+ weeks:[
+ {t:"Secure architecture principles",at:"AWS Well-Architected",items:[L("Read","AWS Well-Architected: Security Pillar","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html")],build:"Draw a three tier app and mark trust boundaries.",done:"You can explain defence in depth and least privilege."},
+ {t:"Harden a Linux server",at:"CIS Benchmarks",items:[L("Read","CIS Benchmarks","https://www.cisecurity.org/cis-benchmarks")],build:"Harden a Linux VM using five benchmark recommendations and note each change.",done:"Your VM passes the checks you applied."},
+ {t:"Zero trust",at:"NIST SP 800-207",items:[L("Read","NIST zero trust architecture","https://csrc.nist.gov/pubs/sp/800/207/final")],build:"Explain zero trust to a manager in five sentences.",done:"You can explain why perimeter-only security fails."},
+ {t:"Networking and edge security",at:"Cloudflare Learning Center",items:[L("Learn","Cloudflare Learning Center","https://www.cloudflare.com/learning/")],build:"Describe how DNS, TLS and a web firewall protect one site.",done:"You can describe the edge security layers."},
+ {t:"Infrastructure as code",at:"Terraform",items:[L("Lab","Terraform tutorials","https://developer.hashicorp.com/terraform/tutorials")],build:"Define a small network in code, deploy and destroy it in a free or local environment.",done:"You can rebuild the same infrastructure from code."},
+ {t:"Cloud identity and access",at:"Least privilege",items:[L("Read","AWS Security Pillar, identity section","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html")],build:"Write a least privilege policy for one task and test that it works.",done:"Your policy grants only what the task needs."},
+ {t:"Learn cloud mistakes safely",at:"flAWS",items:[L("Practice","flAWS cloud security challenges","http://flaws.cloud/")],build:"Finish levels and for each write the fix a defender would apply.",done:"You can name a defence for every level you solved."},
+ {t:"Audit your own cloud",at:"Prowler",items:[L("Lab","Prowler, open source cloud assessment","https://github.com/prowler-cloud/prowler")],build:"Run Prowler against your own free-tier account and fix three findings.",done:"Your report improves after your fixes."},
+ {t:"Vulnerable-by-design cloud lab",at:"CloudGoat",items:[L("Lab","CloudGoat, deploy only in an account you own","https://github.com/RhinoSecurityLabs/cloudgoat")],build:"Run one scenario, then write the controls that would stop it. Remove everything afterwards to avoid cost.",done:"You can describe the weakness and the control."},
+ {t:"Logging and monitoring",at:"Detect problems early",items:[L("Read","AWS Security Pillar, detection section","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html")],build:"List the logs you would turn on for a small cloud account and why.",done:"You can design basic cloud detection."},
+ {t:"Container platform security",at:"Kubernetes",items:[L("Read","Kubernetes security concepts","https://kubernetes.io/docs/concepts/security/")],build:"List five Kubernetes hardening settings.",done:"You can explain basic cluster hardening."},
+ {t:"Capstone: secure environment",at:"Your project",items:[L("Lab","Cloud Controls Matrix, as a checklist","https://cloudsecurityalliance.org/research/cloud-controls-matrix")],build:"Define a small environment in code, harden it, scan it and document the design.",done:"Your repository has code, scan results and a short design note."}
+ ],
+ check:["I can explain defence in depth and least privilege","I hardened a Linux VM","I can explain zero trust","I deployed infrastructure from code","I wrote a least privilege policy","I ran a cloud assessment on my own account","I built and documented a secure environment"],
+ next:"pivot"},
+
+{id:"sblue",color:"blue",ico:"B+",name:"Detection Engineering and Threat Hunting",tag:"Advanced: defensive",title:"Build detections and hunt proactively",hrs:"6 to 8 h/week",
+ goal:"Move from handling alerts to creating them. Write detections, collect better telemetry and hunt for threats nobody alerted on. Finish the Defensive path first.",
+ tools:[["MITRE D3FEND","https://d3fend.mitre.org/"],["Zeek docs","https://docs.zeek.org/en/current/"],["Suricata docs","https://docs.suricata.io/en/latest/"],["Velociraptor","https://docs.velociraptor.app/"]],
+ weeks:[
+ {t:"Defensive techniques map",at:"D3FEND",items:[L("Read","MITRE D3FEND","https://d3fend.mitre.org/")],build:"Pick three ATT&CK techniques and list matching D3FEND countermeasures.",done:"You can link attack techniques to defences."},
+ {t:"Network telemetry",at:"Zeek",items:[L("Lab","Zeek documentation","https://docs.zeek.org/en/current/")],build:"Run Zeek on a capture and read the connection and DNS logs.",done:"You can answer questions from Zeek logs."},
+ {t:"Network detection rules",at:"Suricata",items:[L("Lab","Suricata user guide","https://docs.suricata.io/en/latest/")],build:"Write one rule for a behaviour in your own lab traffic.",done:"Your rule fires on lab traffic and not on normal traffic."},
+ {t:"Endpoint visibility",at:"Velociraptor",items:[L("Lab","Velociraptor documentation","https://docs.velociraptor.app/")],build:"Collect process and file artefacts from a lab machine.",done:"You can collect evidence from an endpoint at scale."},
+ {t:"Hypothesis-driven hunting",at:"ThreatHunter Playbook",items:[L("Read","ThreatHunter-Playbook","https://github.com/OTRF/ThreatHunter-Playbook")],build:"Write one hunt hypothesis, the data you need and what you would see.",done:"You can structure a hunt."},
+ {t:"Study mature detections",at:"Elastic detection rules",items:[L("Read","Elastic detection rules","https://github.com/elastic/detection-rules")],build:"Read five rules and note their logic, exclusions and false positive risks.",done:"You can judge a detection's quality."},
+ {t:"Capstone hunt",at:"Your lab",items:[L("Lab","Sigma rules, to publish your detection","https://github.com/SigmaHQ/sigma")],build:"Run a hunt in your lab, write a detection from the result and document it.",done:"Your hunt produced a reusable detection."}
+ ],
+ check:["I can map attacks to defences with D3FEND","I read Zeek logs","I wrote a Suricata rule","I collected endpoint evidence","I ran a hypothesis-driven hunt"],
+ next:"pivot"},
+
+{id:"sti",color:"ti",ico:"T+",name:"Malware Triage and Advanced DFIR",tag:"Advanced: intelligence and forensics",title:"Analyse suspicious files and rebuild timelines",hrs:"6 to 8 h/week",
+ goal:"Examine suspicious files safely and combine many evidence sources into a timeline. Analysis only. Finish the Threat Intel and DFIR path first.",
+ tools:[["REMnux","https://remnux.org/"],["Ghidra","https://github.com/NationalSecurityAgency/ghidra"],["YARA","https://virustotal.github.io/yara/"],["Plaso","https://plaso.readthedocs.io/en/latest/"]],
+ weeks:[
+ {t:"A safe analysis lab",at:"REMnux",items:[L("Lab","REMnux analysis toolkit","https://remnux.org/")],build:"Build an isolated analysis VM with no network access and a clean snapshot.",done:"Your analysis VM is isolated and restorable."},
+ {t:"Static analysis",at:"Ghidra",items:[L("Lab","Ghidra, on training samples from a course or lab you are allowed to use","https://github.com/NationalSecurityAgency/ghidra")],build:"Open a training sample and list its imported functions and strings.",done:"You can describe a sample's likely purpose from static clues."},
+ {t:"Write detection rules",at:"YARA",items:[L("Lab","YARA documentation","https://virustotal.github.io/yara/")],build:"Write one rule for a training sample and test it against clean files.",done:"Your rule matches the sample and not clean files."},
+ {t:"Windows artefacts",at:"Eric Zimmerman's tools",items:[L("Lab","Eric Zimmerman's forensic tools","https://ericzimmerman.github.io/")],build:"Parse artefacts from a practice image and note what each shows.",done:"You can explain what common Windows artefacts prove."},
+ {t:"Super timelines",at:"Plaso",items:[L("Lab","Plaso documentation","https://plaso.readthedocs.io/en/latest/")],build:"Build a timeline from a practice image and mark the key events.",done:"You can narrow a large timeline to a story."},
+ {t:"Analyst report",at:"Your write-up",items:[L("Read","MITRE ATT&CK, to label behaviours","https://attack.mitre.org/")],build:"Write a short report: sample behaviour, indicators, detection and advice.",done:"Defenders can use your indicators and advice."}
+ ],
+ check:["I built an isolated analysis lab","I did static analysis on a training sample","I wrote a YARA rule","I parsed Windows artefacts","I built a timeline"],
+ next:"pivot"},
+
+{id:"sdevsec",color:"devsec",ico:"D+",name:"Supply Chain and Kubernetes Security",tag:"Advanced: DevSecOps",title:"Trusted builds and protected clusters",hrs:"6 to 8 h/week",
+ goal:"Prove what is in your software and enforce rules in your clusters. Covers bills of materials, policy as code, benchmarks and runtime detection. Finish the DevSecOps path first.",
+ tools:[["NIST SSDF","https://csrc.nist.gov/projects/ssdf"],["CycloneDX","https://cyclonedx.org/"],["Kyverno","https://kyverno.io/docs/"],["Falco","https://falco.org/docs/"]],
+ weeks:[
+ {t:"Secure development framework",at:"NIST SSDF",items:[L("Read","NIST Secure Software Development Framework","https://csrc.nist.gov/projects/ssdf")],build:"Map your pipeline to four SSDF practices.",done:"You can show where your pipeline meets the framework."},
+ {t:"Software bills of materials",at:"CycloneDX",items:[L("Read","CycloneDX","https://cyclonedx.org/"),L("Lab","Generate an SBOM with Trivy","https://trivy.dev/")],build:"Generate an SBOM for your project and find one risky component.",done:"You can answer what is inside your software."},
+ {t:"Policy as code",at:"Kyverno and OPA",items:[L("Lab","Kyverno documentation","https://kyverno.io/docs/"),L("Read","Open Policy Agent documentation","https://www.openpolicyagent.org/docs/latest/")],build:"Write a policy that blocks containers running as root, in a lab cluster.",done:"A bad deployment is rejected by policy."},
+ {t:"Cluster benchmarks",at:"kube-bench",items:[L("Lab","kube-bench, CIS checks for Kubernetes","https://github.com/aquasecurity/kube-bench")],build:"Run kube-bench on a lab cluster and fix three failures.",done:"Your cluster scores better after your fixes."},
+ {t:"Runtime detection",at:"Falco",items:[L("Lab","Falco documentation","https://falco.org/docs/")],build:"Trigger a harmless rule in your lab, such as reading a sensitive file, and view the alert.",done:"You saw a runtime alert and can explain it."},
+ {t:"Capstone: trusted delivery",at:"Your repository",items:[L("Read","SLSA framework","https://slsa.dev/")],build:"Add an SBOM, a policy check and a benchmark run to your pipeline and document it.",done:"Your pipeline proves what it builds and blocks unsafe deployments."}
+ ],
+ check:["I mapped my pipeline to SSDF","I generated an SBOM","I wrote a policy that blocks a bad deployment","I ran and fixed kube-bench findings","I saw a runtime alert in Falco"],
+ next:"pivot"},
+
+{id:"sai",color:"ai",ico:"AI+",name:"Agentic and Model Security",tag:"Advanced: AI security",title:"Secure agents, tools and the model supply chain",hrs:"6 to 8 h/week",
+ goal:"Go deeper than prompt injection. Study tool-using agents, protocol security, model file safety, robustness and evaluation. Finish the AI Security path first.",
+ tools:[["Model Context Protocol","https://modelcontextprotocol.io/"],["OWASP AI Exchange","https://owaspai.org/"],["Inspect evals","https://inspect.aisi.org.uk/"],["ART toolbox","https://github.com/Trusted-AI/adversarial-robustness-toolbox"]],
+ weeks:[
+ {t:"Tool protocols and their risks",at:"MCP",items:[L("Read","Model Context Protocol, including its security section","https://modelcontextprotocol.io/")],build:"List what could go wrong when an agent connects to five tools.",done:"You can threat model an agent with tools."},
+ {t:"Agent threats",at:"OWASP AI Exchange",items:[L("Read","OWASP AI Exchange","https://owaspai.org/")],build:"Write the permissions an agent needs and the permissions you would deny.",done:"You can apply least privilege to an agent."},
+ {t:"Model supply chain",at:"safetensors",items:[L("Read","safetensors format documentation","https://huggingface.co/docs/safetensors/index")],build:"Explain why some model file formats are riskier to load than others.",done:"You can explain model file risk."},
+ {t:"Robustness testing",at:"ART",items:[L("Lab","Adversarial Robustness Toolbox, on your own model","https://github.com/Trusted-AI/adversarial-robustness-toolbox")],build:"Test a small classifier you trained and record how accuracy changes.",done:"You measured robustness on a model you own."},
+ {t:"Evaluations",at:"Inspect",items:[L("Lab","Inspect, LLM evaluation framework","https://inspect.aisi.org.uk/")],build:"Write one evaluation for a behaviour you care about and run it.",done:"You have a repeatable evaluation."},
+ {t:"Red team at scale",at:"garak and PyRIT",items:[L("Lab","garak","https://github.com/NVIDIA/garak"),L("Lab","PyRIT","https://github.com/microsoft/PyRIT")],build:"Run both tools against your lab agent and compare findings.",done:"You can compare tool results and explain the gaps."},
+ {t:"Capstone: assess an agent",at:"Your lab",items:[L("Read","MITRE ATLAS, to label findings","https://atlas.mitre.org/")],build:"Assess a tool-using agent in your lab, fix two issues and retest.",done:"Your report shows risk before and after."}
+ ],
+ check:["I threat modelled an agent with tools","I applied least privilege to an agent","I can explain model file risk","I tested a model's robustness","I wrote a repeatable evaluation"],
+ next:"pivot"},
+
+{id:"sgrc",color:"grc",ico:"G+",name:"Risk Quantification and Privacy",tag:"Advanced: GRC",title:"Measure risk in money and protect personal data",hrs:"5 to 7 h/week",
+ goal:"Move from scoring risks High, Medium and Low to measuring them in value, and learn how privacy programmes work. Finish the GRC path first.",
+ tools:[["NIST SP 800-30","https://csrc.nist.gov/pubs/sp/800/30/r1/final"],["FAIR Institute","https://www.fairinstitute.org/"],["NIST Privacy Framework","https://www.nist.gov/privacy-framework"],["CSA STAR","https://cloudsecurityalliance.org/star"]],
+ weeks:[
+ {t:"Risk assessment method",at:"NIST SP 800-30",items:[L("Read","NIST SP 800-30 Rev. 1","https://csrc.nist.gov/pubs/sp/800/30/r1/final")],build:"Run a formal assessment on one system: threats, vulnerabilities, impact.",done:"You can run a structured risk assessment."},
+ {t:"Quantify risk",at:"FAIR",items:[L("Read","FAIR Institute","https://www.fairinstitute.org/")],build:"Estimate the yearly loss range for one risk, with your assumptions listed.",done:"You can express a risk as a range, not a colour."},
+ {t:"Authorisation and monitoring",at:"NIST SP 800-37",items:[L("Read","NIST SP 800-37 Rev. 2","https://csrc.nist.gov/pubs/sp/800/37/r2/final")],build:"Outline the steps to authorise a system for use.",done:"You can describe a risk management lifecycle."},
+ {t:"Privacy programmes",at:"NIST Privacy Framework",items:[L("Read","NIST Privacy Framework","https://www.nist.gov/privacy-framework")],build:"Write the data inventory for a small service: what, why, where, how long.",done:"You can build a basic data inventory."},
+ {t:"Compare privacy laws",at:"GDPR and the Nigeria Data Protection Act",items:[L("Read","GDPR text","https://gdpr-info.eu/"),L("Read","Nigeria Data Protection Commission","https://ndpc.gov.ng/")],build:"Compare three duties under both regimes in a table.",done:"You can explain where the two regimes agree and differ."},
+ {t:"Third party assurance",at:"CSA STAR",items:[L("Read","CSA STAR registry and levels","https://cloudsecurityalliance.org/star")],build:"Write a vendor review checklist of ten questions.",done:"You can assess a vendor with evidence."},
+ {t:"Capstone: board risk paper",at:"Your report",items:[L("Read","FAIR Institute, for communicating results","https://www.fairinstitute.org/")],build:"Write a two page paper for executives: top risks in value terms and a recommended spend.",done:"An executive can decide from your paper."}
+ ],
+ check:["I ran a structured risk assessment","I estimated risk as a loss range","I can describe a risk management lifecycle","I built a data inventory","I compared two privacy regimes","I wrote an executive risk paper"],
+ next:"pivot"},
+
+{id:"seng",color:"eng",ico:"E+",name:"Cloud Architecture and Zero Trust",tag:"Advanced: engineering",title:"Design secure platforms across clouds",hrs:"6 to 8 h/week",
+ goal:"Design secure platforms, not just fix servers. Compare the major cloud security frameworks, enforce rules as code and manage identities and secrets. Finish the Security Engineering path first.",
+ tools:[["Azure security guidance","https://learn.microsoft.com/en-us/azure/well-architected/security/"],["Google Cloud security framework","https://cloud.google.com/architecture/framework/security"],["Checkov","https://www.checkov.io/"],["Vault tutorials","https://developer.hashicorp.com/vault/tutorials"]],
+ weeks:[
+ {t:"Compare cloud security guidance",at:"Azure, Google and AWS",items:[L("Read","Azure Well-Architected: security","https://learn.microsoft.com/en-us/azure/well-architected/security/"),L("Read","Google Cloud security framework","https://cloud.google.com/architecture/framework/security")],build:"Make a table of how the three clouds describe identity, data and network security.",done:"You can explain the common ideas across clouds."},
+ {t:"Policy as code",at:"Checkov",items:[L("Lab","Checkov, scan infrastructure code","https://www.checkov.io/")],build:"Scan your Terraform code and fix every high severity finding.",done:"Your infrastructure code passes the scan."},
+ {t:"Workload identity",at:"SPIFFE",items:[L("Read","SPIFFE overview","https://spiffe.io/docs/latest/spiffe-about/overview/")],build:"Explain why workloads should prove identity instead of sharing passwords.",done:"You can explain workload identity."},
+ {t:"Secrets management",at:"Vault",items:[L("Lab","HashiCorp Vault tutorials","https://developer.hashicorp.com/vault/tutorials")],build:"Store and retrieve a secret in a lab Vault and rotate it.",done:"No secrets live in your code or config files."},
+ {t:"Design a zero trust platform",at:"NIST SP 800-207",items:[L("Read","NIST zero trust architecture","https://csrc.nist.gov/pubs/sp/800/207/final")],build:"Draw a platform with strong identity, segmentation and logging.",done:"Your design has no implicit trust zones."},
+ {t:"Capstone: platform design review",at:"Your design",items:[L("Read","AWS Well-Architected: Security Pillar, as a review checklist","https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html")],build:"Document your design, review it against a checklist and list the trade-offs.",done:"A peer can understand and challenge your design."}
+ ],
+ check:["I can compare cloud security guidance","I fixed findings from policy-as-code scans","I can explain workload identity","I manage secrets outside code","I designed a zero trust platform"],
+ next:"pivot"}
+];
+
+var DOM={core:"Everyone",off:"Offensive",blue:"Defensive / SOC",ti:"Threat Intel and DFIR",devsec:"DevSecOps",ai:"AI Security",grc:"GRC",eng:"Security Engineering and Cloud"};
+var DOMS=["off","blue","ti","devsec","ai","grc","eng"];
+var ORDER=["core"].concat(DOMS);
+var META={found:{d:"core",l:1},off:{d:"off",l:2,pre:"found"},
+ ad:{d:"off",l:3,pre:"off",el:1},wifi:{d:"off",l:3,pre:"off",el:1},advweb:{d:"off",l:3,pre:"off",el:1},advmobile:{d:"off",l:3,pre:"off",el:1},cloudpt:{d:"off",l:3,pre:"off",el:1},purple:{d:"off",l:3,pre:"off",el:1},
+ blue:{d:"blue",l:2,pre:"found"},sblue:{d:"blue",l:3,pre:"blue"},
+ ti:{d:"ti",l:2,pre:"found"},sti:{d:"ti",l:3,pre:"ti"},
+ devsec:{d:"devsec",l:2,pre:"found"},sdevsec:{d:"devsec",l:3,pre:"devsec"},
+ ai:{d:"ai",l:2,pre:"found"},sai:{d:"ai",l:3,pre:"ai"},
+ grc:{d:"grc",l:2,pre:"found"},sgrc:{d:"grc",l:3,pre:"grc"},
+ eng:{d:"eng",l:2,pre:"found"},seng:{d:"eng",l:3,pre:"eng"}};
+PATHS.forEach(function(p,i){var m=META[p.id];p.d=m.d;p.l=m.l;p.pre=m.pre||"";p.el=!!m.el;p.i0=i;p.tag="Level "+m.l+": "+DOM[m.d]+(m.el?" (elective)":"")});
+PATHS.sort(function(a,b){return ORDER.indexOf(a.d)-ORDER.indexOf(b.d)||a.l-b.l||a.i0-b.i0});
+function pathById(id){return PATHS.filter(function(p){return p.id===id})[0]}
+
+var RES=[];
+var seen={};
+PATHS.forEach(function(p){p.weeks.forEach(function(w){w.items.forEach(function(i){if(i.u&&!seen[i.u]){seen[i.u]=1;RES.push([i.t,p.name,i.u]);}})})});
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var store={};
+try{store=JSON.parse(localStorage.getItem("cyberpath")||"{}")}catch(e){store={}}
+function save(){try{localStorage.setItem("cyberpath",JSON.stringify(store))}catch(e){}}
+
+var totals={};
+var WI={};
+function build(){
+  var worlds=document.getElementById("worlds"),trail=document.getElementById("trail"),top=document.getElementById("topbar"),ov=document.getElementById("overview");
+  var colors={};
+  document.getElementById("setupNote");
+  PATHS.forEach(function(p){colors[p.id]="var(--"+(p.color||p.id)+")"});
+  var tw=0;
+  PATHS.forEach(function(p){tw+=p.weeks.length});
+  document.getElementById("stats").innerHTML='<div class="stat"><b>'+PATHS.length+'</b><span>paths</span></div><div class="stat"><b>'+tw+'</b><span>weeks</span></div><div class="stat"><b>'+RES.length+'</b><span>checked links</span></div>';
+  PATHS.forEach(function(p,pi){
+    var wk=p.weeks.map(function(w,i){
+      var id=p.id+"-w"+i;
+      var items=w.items.map(function(it,j){
+        var key=id+"-"+j;
+        var lbl=it.u?'<a href="'+esc(it.u)+'"'+(it.u.charAt(0)==="#"?'':' target="_blank" rel="noopener"')+'>'+esc(it.t)+'</a>':esc(it.t);
+        return '<label class="check"><input type="checkbox" data-k="'+key+'" data-p="'+p.id+'" data-w="'+id+'"><span class="t"><span class="pill '+it.k+'">'+it.k+'</span>'+lbl+'</span></label>';
+      }).join("");
+      var bk=id+"-build";
+      WI[id]={p:p.name,t:w.t,n:i+1,c:colors[p.id]};
+      return '<div class="wk" id="'+id+'"><div class="num"><small>Week</small>'+(i+1)+'</div><div class="body"><h4>'+esc(w.t)+'</h4><div class="at">'+esc(w.at)+'</div>'+items+
+        '<div class="block"><b>Build it yourself</b><span>'+esc(w.build)+'</span><label class="check"><input type="checkbox" data-k="'+bk+'" data-p="'+p.id+'" data-w="'+id+'"><span class="t">Built</span></label></div>'+
+        '<div class="block done-when"><b>Done when</b><span>'+esc(w.done)+'</span></div>'+
+        '<div class="notebox"><label class="cil" for="ci-'+id+'">End of week check-in</label><input type="text" id="ci-'+id+'" data-ci="'+id+'" maxlength="200" placeholder="One line: what did I build or explain back this week?"><button class="btn ghost small" type="button" data-notebtn="'+id+'">Add note</button><textarea hidden data-note="'+id+'" id="note-'+id+'" aria-label="Note for week '+(i+1)+', '+esc(w.t)+'" placeholder="What did you learn? What confused you? Commands, links, questions."></textarea></div></div></div>';
+    }).join("");
+    var chk=p.check.map(function(c,i){return '<label class="check"><input type="checkbox" data-k="'+p.id+'-c'+i+'" data-p="'+p.id+'" data-c="1"><span class="t">'+esc(c)+'</span></label>'}).join("");
+    var tools=p.tools.map(function(t){return '<a href="'+esc(t[1])+'" target="_blank" rel="noopener">'+esc(t[0])+'</a>'}).join("");
+    var nxt;
+    if(p.d==="core")nxt='<div class="next">Next: <a class="btn small" href="#route">Choose your domain and build your route</a></div>';
+    else if(p.l===2){var advs=PATHS.filter(function(x){return x.d===p.d&&x.l===3});nxt='<div class="next">Next: <a class="btn small" href="#'+advs[0].id+'">'+(p.d==="off"?"Pick an advanced elective":"Continue to "+esc(advs[0].name))+'</a> <a class="btn ghost small" href="#route">Or change my route</a></div>'}
+    else nxt='<div class="next">Done here? <a class="btn small" href="#route">Add another domain to my route</a></div>';
+    var preLine=p.pre?'<p class="prereq">Finish first: <a href="#'+p.pre+'">'+esc(pathById(p.pre).name)+'</a>'+(p.el?'. Elective: pick one or two, not all.':'')+'</p>':'<p class="prereq">Start here. Everyone does this first.</p>';
+    worlds.insertAdjacentHTML("beforeend",'<section class="world" id="'+p.id+'" style="--c:'+colors[p.id]+'"><div class="w-head"><div class="ico">'+p.ico+'</div><div><div class="tag">'+esc(p.tag)+'</div><h2>'+esc(p.name)+'</h2><p>'+esc(p.goal)+'</p>'+preLine+'<div class="w-meta"><div class="bar" aria-hidden="true"><i data-bar="'+p.id+'"></i></div><span data-pc="'+p.id+'">0%</span><span>'+p.weeks.length+' weeks</span><span>'+esc(p.hrs)+'</span><span>about '+totH(p)+' hours in total</span><span class="badge" data-badge="'+p.id+'" hidden>Path complete</span><button class="btn ghost small" type="button" data-outline="'+p.id+'">Copy outline</button><span data-omsg="'+p.id+'" style="font-size:.8rem"></span></div></div></div><div class="w-body"><div><h3 class="sub">Main resources</h3><div class="tools">'+tools+'</div></div><div><h3 class="sub">Week by week</h3><div class="weeks">'+wk+'</div></div><div class="phasecheck"><h3 class="sub">Progress checklist</h3>'+chk+'</div>'+nxt+'</div></section>');
+  });
+  function pathLi(p){return '<li><a href="#'+p.id+'" style="--c:'+colors[p.id]+'"><span class="lvl">L'+p.l+'</span>'+esc(p.name)+'<span class="pct" data-pct="'+p.id+'">0%</span></a></li>'}
+  var fp=PATHS[0];
+  trail.insertAdjacentHTML("beforeend",'<li class="grp">Everyone</li>'+pathLi(fp)+'<li class="grp">Domains</li>');
+  top.insertAdjacentHTML("beforeend",'<a href="#'+fp.id+'" style="--c:'+colors[fp.id]+'"><span class="dot"></span>Foundations</a>');
+  ov.insertAdjacentHTML("beforeend",'<div class="card" style="--c:'+colors[fp.id]+'"><div class="meta">Level 1, everyone</div><div class="big">'+fp.weeks.length+' wk</div><h3>'+esc(fp.name)+'</h3><p>'+esc(fp.title)+'. About '+esc(fp.hrs)+', roughly '+totH(fp)+' hours in total. Do this before any domain.</p><a class="go" href="#'+fp.id+'">Open path</a></div>');
+  DOMS.forEach(function(d){
+    var ps=PATHS.filter(function(p){return p.d===d}),l2=ps.filter(function(p){return p.l===2})[0],l3=ps.filter(function(p){return p.l===3});
+    var wks=ps.reduce(function(a,p){return a+p.weeks.length},0);
+    trail.insertAdjacentHTML("beforeend",'<li><details class="dom" data-dom="'+d+'"><summary style="--c:var(--'+d+')"><span class="dot"></span>'+esc(DOM[d])+'<span class="pct" data-dpct="'+d+'">0%</span></summary><ul class="trail sub">'+ps.map(pathLi).join("")+'</ul></details></li>');
+    top.insertAdjacentHTML("beforeend",'<a href="#'+l2.id+'" style="--c:var(--'+d+')"><span class="dot"></span>'+esc(DOM[d])+'</a>');
+    ov.insertAdjacentHTML("beforeend",'<div class="card" style="--c:var(--'+d+')"><div class="meta">Domain</div><div class="big">'+l2.weeks.length+' wk</div><h3>'+esc(DOM[d])+'</h3><p>'+esc(l2.title)+'. About '+totH(l2)+' hours.</p><p>Level 3 '+(d==="off"?"electives":"path")+': '+l3.map(function(x){return esc(x.name)}).join(", ")+'.</p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto"><a class="btn ghost small" href="#'+l2.id+'">Open Level 2</a><button class="btn small" type="button" data-setmain="'+d+'">Make this my main domain</button></div></div>');
+  });
+  document.getElementById("setupList").innerHTML=SETUP.map(function(s,i){
+    var lbl=s[1]?'<a href="'+esc(s[1])+'" target="_blank" rel="noopener">'+esc(s[0])+'</a>':esc(s[0]);
+    return '<label class="check"><input type="checkbox" data-k="setup-'+i+'" data-p="setup"><span class="t">'+lbl+'</span></label>';
+  }).join("");
+  document.getElementById("resBody").innerHTML=RES.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td><a href="'+esc(r[2])+'" target="_blank" rel="noopener">'+esc(r[2])+'</a></td></tr>'}).join("");
+}
+
+function refresh(){
+  var all=0,doneAll=0,earned=[],pcts={},cnt={};
+  PATHS.forEach(function(p){
+    var boxes=document.querySelectorAll('#'+p.id+' input[type=checkbox]');
+    var d=0;boxes.forEach(function(b){if(b.checked)d++});
+    var pct=boxes.length?Math.round(d/boxes.length*100):0;
+    pcts[p.id]=pct;cnt[p.id]={d:d,n:boxes.length};
+    all+=boxes.length;doneAll+=d;
+    document.querySelectorAll('[data-pct="'+p.id+'"]').forEach(function(e){e.textContent=pct+"%"});
+    document.querySelectorAll('[data-pc="'+p.id+'"]').forEach(function(e){e.textContent=pct+"% done"});
+    var bar=document.querySelector('[data-bar="'+p.id+'"]');if(bar)bar.style.width=pct+"%";
+    var bd=document.querySelector('[data-badge="'+p.id+'"]');if(bd)bd.hidden=pct<100;
+    var wd=document.getElementById(p.id);if(wd)wd.classList.toggle("complete",pct>=100&&boxes.length>0);
+    if(pct>=100&&boxes.length>0)earned.push(p);
+    p.weeks.forEach(function(w,i){
+      var id=p.id+"-w"+i,wb=document.querySelectorAll('#'+id+' input');var ok=true;wb.forEach(function(b){if(!b.checked)ok=false});
+      document.getElementById(id).classList.toggle("done",ok&&wb.length>0);
+    });
+  });
+  DOMS.forEach(function(d){
+    var ps=PATHS.filter(function(p){return p.d===d}),s=0;ps.forEach(function(p){s+=pcts[p.id]||0});
+    document.querySelectorAll('[data-dpct="'+d+'"]').forEach(function(e){e.textContent=Math.round(s/ps.length)+"%"});
+  });
+  var rids=routeReady?routeIds():[];
+  var t=all?Math.round(doneAll/all*100):0,label="% of all paths";
+  if(rids.length){var rd=0,rn=0;rids.forEach(function(id){rd+=cnt[id].d;rn+=cnt[id].n});t=rn?Math.round(rd/rn*100):0;label="% of my route"}
+  document.getElementById("totalBar").style.width=t+"%";
+  document.getElementById("totalPct").textContent=t+label;
+  var rank=doneAll>=250?"Specialist":doneAll>=120?"Advanced":doneAll>=50?"Practitioner":doneAll>=10?"Apprentice":"Rookie";
+  document.getElementById("rank").textContent=rank;
+  document.getElementById("sideProgress").textContent=doneAll+" of "+all+" steps done";
+  renderPlan();
+  renderRoute();
+  document.getElementById("badges").innerHTML=earned.map(function(p){return '<span class="badge" style="--c:var(--'+(p.color||p.id)+')">'+esc(p.name)+' complete</span>'}).join("");
+}
+
+build();
+document.querySelectorAll('input[type=checkbox][data-k]').forEach(function(b){
+  b.checked=!!store[b.getAttribute("data-k")];
+  b.addEventListener("change",function(){store[b.getAttribute("data-k")]=b.checked?1:0;save();refresh();setLast(b.getAttribute("data-w"))});
+});
+refresh();
+
+/* Notes and resume */
+var notes={};
+try{notes=JSON.parse(localStorage.getItem("cyberpath-notes")||"{}")}catch(e){notes={}}
+function saveNotes(){try{localStorage.setItem("cyberpath-notes",JSON.stringify(notes))}catch(e){}}
+function setLast(id){if(!id||!WI[id])return;try{localStorage.setItem("cyberpath-last",id)}catch(e){}showResume()}
+function showResume(){
+  var id="";try{id=localStorage.getItem("cyberpath-last")||""}catch(e){}
+  var b=document.getElementById("resumeBtn");
+  if(id&&WI[id]){b.hidden=false;b.href="#"+id;b.textContent="Continue: "+WI[id].p+", week "+WI[id].n}else{b.hidden=true}
+}
+var ci={};
+try{ci=JSON.parse(localStorage.getItem("cyberpath-ci")||"{}")}catch(e){ci={}}
+function saveCi(){try{localStorage.setItem("cyberpath-ci",JSON.stringify(ci))}catch(e){}}
+function noteIds(){return Object.keys(WI).filter(function(k){return (notes[k]&&notes[k].trim())||(ci[k]&&ci[k].trim())})}
+function updateCount(){document.getElementById("ncount").textContent=noteIds().length}
+function renderNotes(){
+  var q=document.getElementById("nsearch").value.trim().toLowerCase();
+  var out="";
+  noteIds().forEach(function(id){
+    var m=WI[id],t=notes[id]||"",c=ci[id]||"";
+    if(q&&(t+" "+c+" "+m.t+" "+m.p).toLowerCase().indexOf(q)<0)return;
+    out+='<div class="nitem"><div class="nh"><span class="dot" style="--c:'+m.c+'"></span>'+esc(m.p)+' / week '+m.n+'</div><b>'+esc(m.t)+'</b>'+(c.trim()?'<div class="nci"><b>Check-in:</b> '+esc(c)+'</div>':'')+(t.trim()?'<div class="nt">'+esc(t)+'</div>':'')+'<button class="btn ghost small" type="button" data-go="'+id+'">Open week</button></div>';
+  });
+  document.getElementById("nlist").innerHTML=out||'<p class="nempty">'+(q?"No notes match your search.":"No notes yet. Press Add note inside any week and it will show up here.")+'</p>';
+}
+document.querySelectorAll("textarea[data-note]").forEach(function(ta){
+  var id=ta.getAttribute("data-note");
+  if(notes[id]){ta.value=notes[id];ta.hidden=false;var bb=document.querySelector('[data-notebtn="'+id+'"]');if(bb)bb.textContent="Hide note"}
+  ta.addEventListener("input",function(){notes[id]=ta.value;saveNotes();updateCount();renderNotes();setLast(id)});
+});
+document.querySelectorAll("[data-notebtn]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var id=btn.getAttribute("data-notebtn"),ta=document.querySelector('textarea[data-note="'+id+'"]');
+    ta.hidden=!ta.hidden;
+    btn.textContent=ta.hidden?(notes[id]&&notes[id].trim()?"Show note":"Add note"):"Hide note";
+    if(!ta.hidden)ta.focus();
+  });
+});
+var panel=document.getElementById("npanel"),tab=document.getElementById("ntab");
+function openPanel(o){
+  panel.classList.toggle("open",o);
+  if(o){panel.removeAttribute("inert");renderNotes()}else{panel.setAttribute("inert","")}
+  tab.setAttribute("aria-expanded",o?"true":"false");
+}
+tab.addEventListener("click",function(){openPanel(!panel.classList.contains("open"))});
+document.getElementById("nclose").addEventListener("click",function(){openPanel(false);tab.focus()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&panel.classList.contains("open")){openPanel(false);tab.focus()}});
+document.getElementById("nsearch").addEventListener("input",renderNotes);
+document.getElementById("nlist").addEventListener("click",function(e){
+  var g=e.target.closest("[data-go]");if(!g)return;
+  var id=g.getAttribute("data-go"),el=document.getElementById(id),ta=document.querySelector('textarea[data-note="'+id+'"]');
+  openPanel(false);
+  if(ta){ta.hidden=false;var bb=document.querySelector('[data-notebtn="'+id+'"]');if(bb)bb.textContent="Hide note"}
+  if(el){el.scrollIntoView({block:"start"});if(ta)ta.focus({preventScroll:true})}
+});
+var sp=document.getElementById("nscratch");
+sp.value=notes._scratch||"";
+sp.addEventListener("input",function(){notes._scratch=sp.value;saveNotes()});
+document.getElementById("ncopy").addEventListener("click",function(){
+  var txt="MY CYBER PATH NOTES\n\n";
+  PATHS.forEach(function(p){p.weeks.forEach(function(w,i){var id=p.id+"-w"+i,hasN=notes[id]&&notes[id].trim(),hasC=ci[id]&&ci[id].trim();if(hasN||hasC){txt+=p.name+", week "+(i+1)+": "+w.t+"\n";if(hasC)txt+="Check-in: "+ci[id].trim()+"\n";if(hasN)txt+=notes[id].trim()+"\n";txt+="\n"}})});
+  if(notes._scratch&&notes._scratch.trim())txt+="Scratchpad\n"+notes._scratch.trim()+"\n";
+  var msg=document.getElementById("ncopied");
+  function fb(){
+    try{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();var ok=document.execCommand("copy");document.body.removeChild(t);msg.textContent=ok?"Copied":"Copy failed"}catch(e){msg.textContent="Copy failed"}
+  }
+  try{navigator.clipboard.writeText(txt).then(function(){msg.textContent="Copied"},fb)}catch(e){fb()}
+  setTimeout(function(){msg.textContent=""},2500);
+});
+/* Check-ins */
+document.querySelectorAll("input[data-ci]").forEach(function(inp){
+  var id=inp.getAttribute("data-ci");
+  if(ci[id])inp.value=ci[id];
+  inp.addEventListener("input",function(){ci[id]=inp.value;saveCi();updateCount();renderNotes();setLast(id)});
+});
+
+/* Copy helper */
+function copyText(txt,msgEl){
+  function done(m){if(msgEl){msgEl.textContent=m;setTimeout(function(){msgEl.textContent=""},2500)}}
+  function fb(){try{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();var ok=document.execCommand("copy");document.body.removeChild(t);done(ok?"Copied":"Copy failed")}catch(e){done("Copy failed")}}
+  try{navigator.clipboard.writeText(txt).then(function(){done("Copied")},fb)}catch(e){fb()}
+}
+
+/* Copy outline per path */
+document.querySelectorAll("[data-outline]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var pid=btn.getAttribute("data-outline"),p=PATHS.filter(function(x){return x.id===pid})[0];
+    var md="# "+p.name+"\n"+p.title+" ("+p.hrs+")\n\n";
+    p.weeks.forEach(function(w,i){
+      var id=p.id+"-w"+i;
+      md+="## Week "+(i+1)+": "+w.t+"\n";
+      w.items.forEach(function(it,j){
+        var b=document.querySelector('input[data-k="'+id+"-"+j+'"]');
+        md+="- ["+(b&&b.checked?"x":" ")+"] "+it.k+": "+it.t+(it.u?" ("+it.u+")":"")+"\n";
+      });
+      md+="- Build: "+w.build+"\n- Done when: "+w.done+"\n\n";
+    });
+    copyText(md,document.querySelector('[data-omsg="'+pid+'"]'));
+  });
+});
+
+/* Extra nav links */
+(function(){
+  var top=document.getElementById("topbar");
+  [["quiz","Role quiz"],["route","My route"],["planner","Planner"],["data","Backup"]].forEach(function(x){
+    top.insertAdjacentHTML("beforeend",'<a href="#'+x[0]+'"><span class="dot"></span>'+x[1]+'</a>');
+  });
+})();
+
+/* Role quiz */
+var QUIZ=[
+{q:"Which task sounds most fun?",o:[
+ ["Getting into a practice system in a lab",{off:3}],
+ ["Spotting an attack hidden in logs",{blue:3}],
+ ["Working out who attacked and why",{ti:3}],
+ ["Automating security checks in a build pipeline",{devsec:3}],
+ ["Making an AI assistant resist misuse",{ai:3}],
+ ["Writing rules and measuring risk for a company",{grc:3}],
+ ["Designing a system so it is secure from the start",{eng:3}]]},
+{q:"How do you like to work?",o:[
+ ["Solving puzzles, often under time pressure",{off:2,blue:2}],
+ ["Researching and writing it up",{ti:2,grc:2}],
+ ["Building and coding things",{devsec:2,ai:1,eng:2}],
+ ["Talking with people and explaining decisions",{grc:3}],
+ ["Experimenting to see how something behaves",{ai:2,off:1}]]},
+{q:"How comfortable are you with coding today?",o:[
+ ["Not at all yet",{grc:2,ti:1,blue:1}],
+ ["I can read and edit short scripts",{off:1,blue:1,ti:1,eng:1}],
+ ["I can write programs",{devsec:2,ai:2,eng:2,off:1}]]},
+{q:"What would make you proudest?",o:[
+ ["Proving a flaw in a lab and explaining the fix",{off:3}],
+ ["A detection I wrote caught something real",{blue:3}],
+ ["A report that changed a decision",{ti:2,grc:2}],
+ ["A pipeline that blocked a bad release",{devsec:3}],
+ ["A model that held up under attack",{ai:3}],
+ ["A platform that passed a tough review",{eng:3,grc:1}]]},
+{q:"Which headline would you click?",o:[
+ ["Bank breached through a web flaw",{off:3}],
+ ["Team stops ransomware in minutes",{blue:3}],
+ ["Group behind attack identified",{ti:3}],
+ ["Poisoned open-source package hits thousands",{devsec:3}],
+ ["Chatbot tricked into leaking data",{ai:3}],
+ ["Regulator fines company over data leak",{grc:3}],
+ ["Cloud misconfiguration exposes records",{eng:3}]]},
+{q:"Which setting suits you best?",o:[
+ ["Hands-on labs and challenges",{off:2,blue:1}],
+ ["Dashboards, alerts and investigations",{blue:2,ti:2}],
+ ["Documents, standards and meetings",{grc:3}],
+ ["Code, repositories and infrastructure",{devsec:2,eng:2,ai:1}],
+ ["Notebooks and experiments",{ai:3}]]}
+];
+var WHY={
+ off:"You enjoy testing systems and proving what is weak. Offensive security rewards curiosity and persistence.",
+ blue:"You like watching for trouble and acting fast. Defensive work is the daily practice of finding and stopping attacks.",
+ ti:"You like research and building a story from evidence. Intelligence and forensics reward patient analysis and clear writing.",
+ devsec:"You like building and automating. DevSecOps puts security checks inside the way software is made.",
+ ai:"You are curious about how models behave and fail. AI security is young and needs people who experiment.",
+ grc:"You prefer standards, judgement and clear communication. GRC turns security into decisions leaders can act on.",
+ eng:"You like designing systems that are safe from the start. Security engineering rewards careful, practical building."
+};
+var ADV={off:"ad",blue:"sblue",ti:"sti",devsec:"sdevsec",ai:"sai",grc:"sgrc",eng:"seng"};
+var qForm=document.getElementById("quizForm"),qOut=document.getElementById("quizOut");
+qForm.innerHTML=QUIZ.map(function(q,i){
+  return '<fieldset><legend>'+(i+1)+'. '+esc(q.q)+'</legend>'+q.o.map(function(o,j){
+    return '<label><input type="radio" name="q'+i+'" value="'+j+'"><span>'+esc(o[0])+'</span></label>';
+  }).join("")+'</fieldset>';
+}).join("")+'<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn" type="submit">See my result</button><button class="btn ghost" type="button" id="quizReset">Clear answers</button><span id="quizMsg" style="color:var(--muted);font-size:.9rem"></span></div>';
+function pathName(id){var f=PATHS.filter(function(p){return p.id===id})[0];return f?f.name:id}
+function quizAnswers(){return QUIZ.map(function(q,i){var r=qForm.querySelector('input[name="q'+i+'"]:checked');return r?Number(r.value):-1})}
+function showQuiz(ans){
+  var sc={off:0,blue:0,ti:0,devsec:0,ai:0,grc:0,eng:0};
+  ans.forEach(function(a,i){if(a>=0){var w=QUIZ[i].o[a][1];for(var k in w)sc[k]+=w[k]}});
+  var ranked=Object.keys(sc).sort(function(a,b){return sc[b]-sc[a]}).slice(0,3);
+  var top=sc[ranked[0]]||1;
+  qOut.innerHTML='<p class="note"><b>Your top matches.</b> Everyone does Foundations first. Then set your main domain, and a side domain if you like, and the page builds your route. Not sure between two? Try week 1 of each.</p>'+ranked.map(function(id,r){
+    var dom=id==="off"?"Offensive Security":pathName(id);
+    return '<div class="qres" style="--c:var(--'+id+')"><h3><span class="dot" style="--c:var(--'+id+')"></span>'+(r+1)+'. '+esc(dom)+'</h3><div class="qbar" aria-hidden="true"><i style="width:'+Math.round(sc[id]/top*100)+'%"></i></div><p>'+esc(WHY[id])+'</p><div class="acts"><button class="btn small" type="button" data-setmain="'+id+'">Make this my main domain</button><button class="btn ghost small" type="button" data-setside="'+id+'">Add as side domain</button><a class="btn ghost small" href="#'+id+'">Open Level 2</a></div></div>';
+  }).join("");
+}
+qForm.addEventListener("submit",function(e){
+  e.preventDefault();
+  var a=quizAnswers(),msg=document.getElementById("quizMsg");
+  if(a.indexOf(-1)>=0){msg.textContent="Answer all six questions to see a result.";return}
+  msg.textContent="";
+  try{localStorage.setItem("cyberpath-quiz",JSON.stringify(a))}catch(x){}
+  showQuiz(a);
+});
+document.getElementById("quizReset").addEventListener("click",function(){
+  qForm.reset();qOut.innerHTML="";document.getElementById("quizMsg").textContent="";
+  try{localStorage.removeItem("cyberpath-quiz")}catch(x){}
+});
+(function(){
+  var a=null;try{a=JSON.parse(localStorage.getItem("cyberpath-quiz")||"null")}catch(e){a=null}
+  if(a&&a.length===QUIZ.length&&a.indexOf(-1)<0){
+    a.forEach(function(v,i){var r=qForm.querySelector('input[name="q'+i+'"][value="'+v+'"]');if(r)r.checked=true});
+    showQuiz(a);
+  }
+})();
+
+/* Study planner */
+var planState={start:"",hours:8,sel:["found"]};
+try{var ps=JSON.parse(localStorage.getItem("cyberpath-plan")||"null");if(ps&&typeof ps==="object")planState=ps}catch(e){}
+function isoToday(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+if(!planState.start)planState.start=isoToday();
+if(!Array.isArray(planState.sel))planState.sel=["found"];
+var planReady=false;
+var pStart=document.getElementById("planStart"),pHours=document.getElementById("planHours"),pPaths=document.getElementById("planPaths");
+pStart.value=planState.start;pHours.value=planState.hours;
+pPaths.innerHTML=PATHS.map(function(p){return '<label><input type="checkbox" data-plan="'+p.id+'"'+(planState.sel.indexOf(p.id)>=0?" checked":"")+'><span>'+esc(p.name)+' ('+p.weeks.length+' wk)</span></label>'}).join("");
+function typHours(p){var m=/(\d+)\s*to\s*(\d+)/.exec(p.hrs);return m?(Number(m[1])+Number(m[2]))/2:8}
+function weeksLeft(p){
+  return p.weeks.filter(function(w,i){
+    var bs=document.querySelectorAll('#'+p.id+'-w'+i+' input[type=checkbox]');var d=bs.length>0;
+    bs.forEach(function(b){if(!b.checked)d=false});return !d;
+  }).length;
+}
+function fmtDate(d){return d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})}
+function renderPlan(){
+  if(!planReady)return;
+  var hrs=Math.max(1,Math.min(60,Number(pHours.value)||8));
+  var start=new Date(pStart.value+"T00:00:00");if(isNaN(start.getTime()))start=new Date();
+  var cur=new Date(start.getTime()),rows="",totalH=0,any=false;
+  PATHS.forEach(function(p){
+    var cb=pPaths.querySelector('input[data-plan="'+p.id+'"]');if(!cb||!cb.checked)return;
+    any=true;
+    var rem=weeksLeft(p),need=rem*typHours(p),cal=rem?Math.ceil(need/hrs):0;
+    var s=new Date(cur.getTime()),e=new Date(cur.getTime());e.setDate(e.getDate()+cal*7);
+    totalH+=need;
+    rows+='<tr><td>'+esc(p.name)+'</td><td>'+rem+' of '+p.weeks.length+'</td><td>'+cal+'</td><td>'+(rem?fmtDate(s):"Done")+'</td><td>'+(rem?fmtDate(e):"Done")+'</td></tr>';
+    cur=e;
+  });
+  document.getElementById("planOut").innerHTML=rows||'<tr><td colspan="5">Pick at least one path.</td></tr>';
+  var calTotal=Math.round((cur.getTime()-start.getTime())/604800000);
+  document.getElementById("planSum").innerHTML=any?'<b>Finish line.</b> At '+hrs+' hours a week you finish on '+fmtDate(cur)+', about '+calTotal+' weeks from your start, with roughly '+Math.round(totalH)+' hours of study. Paths run one after another in the order shown.':'Choose paths on the left to see your timeline.';
+}
+function savePlan(){
+  planState={start:pStart.value||isoToday(),hours:Number(pHours.value)||8,sel:[].slice.call(pPaths.querySelectorAll("input:checked")).map(function(x){return x.getAttribute("data-plan")})};
+  try{localStorage.setItem("cyberpath-plan",JSON.stringify(planState))}catch(e){}
+  renderPlan();
+}
+pStart.addEventListener("input",savePlan);pHours.addEventListener("input",savePlan);pPaths.addEventListener("change",savePlan);
+planReady=true;renderPlan();
+
+/* My route */
+var routeState={main:"",side:"",el:[]};
+try{var rs=JSON.parse(localStorage.getItem("cyberpath-route")||"null");if(rs&&typeof rs==="object")routeState=rs}catch(e){}
+if(!Array.isArray(routeState.el))routeState.el=[];
+if(DOMS.indexOf(routeState.main)<0)routeState.main="";
+if(DOMS.indexOf(routeState.side)<0||routeState.side===routeState.main)routeState.side="";
+var routeReady=false;
+var rMain=document.getElementById("routeMain"),rSide=document.getElementById("routeSide"),rElect=document.getElementById("routeElect"),rOut=document.getElementById("routeOut");
+var domOpts='<option value="">Not chosen</option>'+DOMS.map(function(d){return '<option value="'+d+'">'+esc(DOM[d])+'</option>'}).join("");
+rMain.innerHTML=domOpts;rSide.innerHTML=domOpts;
+function routeIds(){
+  if(!routeState.main)return [];
+  var ids=["found"];
+  [routeState.main,routeState.side].forEach(function(d){
+    if(!d)return;
+    if(ids.indexOf(d)<0)ids.push(d);
+    PATHS.filter(function(p){return p.d===d&&p.l===3}).forEach(function(p){
+      if(d==="off"){if(routeState.el.indexOf(p.id)>=0&&ids.indexOf(p.id)<0)ids.push(p.id)}
+      else if(ids.indexOf(p.id)<0)ids.push(p.id);
+    });
+  });
+  return ids;
+}
+function firstOpenWeek(p){
+  for(var i=0;i<p.weeks.length;i++){
+    var bs=document.querySelectorAll('#'+p.id+'-w'+i+' input[type=checkbox]'),done=bs.length>0;
+    bs.forEach(function(b){if(!b.checked)done=false});
+    if(!done)return i;
+  }
+  return -1;
+}
+function renderRoute(){
+  if(!routeReady)return;
+  rMain.value=routeState.main;rSide.value=routeState.side;
+  var hasOff=routeState.main==="off"||routeState.side==="off";
+  rElect.hidden=!hasOff;
+  if(hasOff){
+    rElect.innerHTML='<b>Offensive electives.</b> Pick one or two advanced paths, not all six.<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin-top:8px">'+PATHS.filter(function(p){return p.d==="off"&&p.l===3}).map(function(p){return '<label class="check" style="padding:3px 0"><input type="checkbox" data-el="'+p.id+'"'+(routeState.el.indexOf(p.id)>=0?" checked":"")+'><span class="t">'+esc(p.name)+' ('+p.weeks.length+' wk)</span></label>'}).join("")+'</div>';
+  }
+  var ids=routeIds();
+  if(!ids.length){rOut.innerHTML='<p class="note">Choose a main domain to see your route. Not sure? Take the role quiz above.</p>';syncSidebar();return}
+  var next="";
+  for(var k=0;k<ids.length&&!next;k++){
+    var p=pathById(ids[k]),w=firstOpenWeek(p);
+    if(w>=0)next='<div class="nextup"><div class="eyebrow">Next up</div><a href="#'+p.id+'-w'+w+'"><b>'+esc(p.name)+', week '+(w+1)+':</b> '+esc(p.weeks[w].t)+'</a></div>';
+  }
+  if(!next)next='<div class="nextup"><div class="eyebrow">Route complete</div><b>You finished every path on your route. Add another domain or an elective.</b></div>';
+  var cards=ids.map(function(id,i){
+    var p=pathById(id),left=weeksLeft(p),box=document.querySelectorAll('#'+id+' input[type=checkbox]'),d=0;
+    box.forEach(function(b){if(b.checked)d++});
+    var pct=box.length?Math.round(d/box.length*100):0;
+    return '<li class="rcard" style="--c:var(--'+(p.color||p.id)+')"><span class="lvl">L'+p.l+'</span><div style="min-width:0"><b>'+esc(p.name)+'</b><div class="meta" style="font-size:.82rem;color:var(--muted)">'+(left?left+" of "+p.weeks.length+" weeks left":"Complete")+', about '+totH(p)+' h in total, '+pct+'%</div><div class="qbar" style="margin-top:6px"><i style="width:'+pct+'%"></i></div></div><a class="btn ghost small" href="#'+id+'">Open</a></li>';
+  }).join("");
+  var note=hasOff&&!routeState.el.length?'<p class="note" style="margin-top:12px">Pick one or two Offensive electives above to add Level 3 to your route.</p>':'';
+  rOut.innerHTML=next+'<ol class="rlist">'+cards+'</ol>'+note;
+  syncSidebar();
+}
+function syncSidebar(){
+  document.querySelectorAll("details.dom").forEach(function(dt){
+    var d=dt.getAttribute("data-dom");
+    if(routeState.main)dt.open=(d===routeState.main||d===routeState.side);
+  });
+}
+function applyRouteToPlanner(){
+  var ids=routeIds();if(!ids.length)return;
+  pPaths.querySelectorAll("input").forEach(function(c){c.checked=ids.indexOf(c.getAttribute("data-plan"))>=0});
+  savePlan();
+}
+function saveRoute(){
+  if(routeState.side===routeState.main)routeState.side="";
+  try{localStorage.setItem("cyberpath-route",JSON.stringify(routeState))}catch(e){}
+  applyRouteToPlanner();renderRoute();refresh();
+}
+rMain.addEventListener("change",function(){routeState.main=rMain.value;saveRoute()});
+rSide.addEventListener("change",function(){routeState.side=rSide.value;saveRoute()});
+rElect.addEventListener("change",function(e){
+  var c=e.target.closest("[data-el]");if(!c)return;
+  var id=c.getAttribute("data-el"),i=routeState.el.indexOf(id);
+  if(c.checked&&i<0)routeState.el.push(id);if(!c.checked&&i>=0)routeState.el.splice(i,1);
+  saveRoute();
+});
+document.addEventListener("click",function(e){
+  var m=e.target.closest("[data-setmain]"),s=e.target.closest("[data-setside]");
+  if(!m&&!s)return;
+  if(m){routeState.main=m.getAttribute("data-setmain");if(routeState.side===routeState.main)routeState.side=""}
+  else{var d=s.getAttribute("data-setside");if(!routeState.main)routeState.main=d;else if(d!==routeState.main)routeState.side=d}
+  saveRoute();
+  document.getElementById("route").scrollIntoView({block:"start"});
+});
+routeReady=true;renderRoute();syncSidebar();
+
+/* Backup and restore */
+var LS=["cyberpath","cyberpath-notes","cyberpath-ci","cyberpath-log","cyberpath-quiz","cyberpath-plan","cyberpath-last","cyberpath-route"];
+document.getElementById("bkMake").addEventListener("click",function(){
+  var o={v:1,d:{}};
+  LS.forEach(function(k){try{var v=localStorage.getItem(k);if(v!==null)o.d[k]=v}catch(e){}});
+  var code="CP1."+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+  document.getElementById("bkOut").value=code;
+  document.getElementById("bkMsg").textContent=Object.keys(o.d).length?"Code created":"Nothing saved yet";
+});
+document.getElementById("bkCopy").addEventListener("click",function(){
+  var v=document.getElementById("bkOut").value;
+  if(!v){document.getElementById("bkMsg").textContent="Create a code first";return}
+  copyText(v,document.getElementById("bkMsg"));
+});
+var armedRestore=false,armedReset=false;
+document.getElementById("bkRestore").addEventListener("click",function(){
+  var b=this,msg=document.getElementById("bkMsg2");
+  var raw=document.getElementById("bkIn").value.replace(/\s+/g,"");
+  var o=null;
+  try{if(raw.indexOf("CP1.")!==0)throw 0;o=JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));if(!o||o.v!==1||typeof o.d!=="object")throw 0}catch(e){msg.textContent="That code is not valid.";return}
+  if(!armedRestore){armedRestore=true;b.textContent="Press again to replace";msg.textContent="";setTimeout(function(){armedRestore=false;b.textContent="Restore from code"},4000);return}
+  try{LS.forEach(function(k){if(typeof o.d[k]==="string")localStorage.setItem(k,o.d[k]);else localStorage.removeItem(k)})}catch(e){msg.textContent="Could not write to this browser.";return}
+  msg.textContent="Restored. Reloading...";
+  setTimeout(function(){location.reload()},300);
+});
+document.getElementById("bkReset").addEventListener("click",function(){
+  var b=this,msg=document.getElementById("bkMsg2");
+  if(!armedReset){armedReset=true;b.textContent="Press again to erase";setTimeout(function(){armedReset=false;b.textContent="Erase everything"},4000);return}
+  try{LS.forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+  msg.textContent="Erased. Reloading...";
+  setTimeout(function(){location.reload()},300);
+});
+updateCount();renderNotes();showResume();refresh();
+
+document.getElementById("themeBtn").addEventListener("click",function(){
+  var r=document.documentElement,cur=r.getAttribute("data-theme");
+  if(!cur)cur=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
+  r.setAttribute("data-theme",cur==="dark"?"light":"dark");
+});
+
+var logs=[];
+try{logs=JSON.parse(localStorage.getItem("cyberpath-log")||"[]")}catch(e){logs=[]}
+function renderLog(){
+  document.getElementById("entries").innerHTML=logs.slice().reverse().map(function(l){return '<div class="entry"><small>'+esc(l.d)+'</small>'+esc(l.t)+'</div>'}).join("");
+}
+function saveLog(){try{localStorage.setItem("cyberpath-log",JSON.stringify(logs))}catch(e){}}
+document.getElementById("logSave").addEventListener("click",function(){
+  var ta=document.getElementById("logText"),v=ta.value.trim();if(!v)return;
+  logs.push({d:new Date().toLocaleDateString(),t:v});saveLog();ta.value="";renderLog();
+});
+var clearArmed=false;
+document.getElementById("logClear").addEventListener("click",function(){
+  var b=this;
+  if(!clearArmed){clearArmed=true;b.textContent="Click again to confirm";setTimeout(function(){clearArmed=false;b.textContent="Clear all entries"},3000);return}
+  logs=[];saveLog();renderLog();clearArmed=false;b.textContent="Clear all entries";
+});
+renderLog();
+})();
+</script>
+
+</body></html>
