@@ -7,7 +7,7 @@
 [![Open the site](https://img.shields.io/badge/▶%20Open%20Cyber%20Path-2563eb?style=for-the-badge&logoColor=white)](https://arksherx.github.io/cyber-path/)
 
 [![Licence: CC BY-SA 4.0](https://img.shields.io/badge/Licence-CC%20BY--SA%204.0-lightgrey.svg?style=flat-square)](https://creativecommons.org/licenses/by-sa/4.0/)
-![Works offline](https://img.shields.io/badge/works-offline-success?style=flat-square)
+![App works offline](https://img.shields.io/badge/app%20works-offline-success?style=flat-square)
 ![No tracking](https://img.shields.io/badge/tracking-none-success?style=flat-square)
 ![Single file](https://img.shields.io/badge/single-HTML%20file-blue?style=flat-square)
 ![Paths](https://img.shields.io/badge/paths-20-blue?style=flat-square)
@@ -69,12 +69,41 @@ the domains that match how you like to work.
 
 ---
 
+## Progress, ranks and badges
+
+Tick boxes as you finish things. Two things track what you've done:
+
+**Path badges.** Finish a path and it earns a badge — *"Offensive complete"*, colour-coded
+to that domain. They collect up as you go.
+
+**A rank**, based on how many of the 497 steps you've completed:
+
+| Rank | Steps done |
+|---|:--:|
+| Rookie | 0 – 9 |
+| Apprentice | 10 – 49 |
+| Practitioner | 50 – 119 |
+| Advanced | 120 – 249 |
+| **Specialist** | 250+ |
+
+These are for your own motivation, not credentials — they live in your browser, so nobody
+else can verify them and they won't go on a CV. That's the trade for having no account and
+no server. Use them to see momentum, not to prove anything.
+
+---
+
 ## Why it's built this way
 
-**🔌 It works completely offline.**
-No external scripts, no trackers, no API calls. The whole thing is one self-contained
-HTML file. Download it once and it works on a plane, on mobile data you're rationing, or
-on a connection that keeps dropping. That is deliberate, not an accident.
+**🔌 The app works offline. The resources it points to don't.**
+Worth being precise about this. The page itself — the quiz, the planner, your progress,
+your notes, the whole structure — is one self-contained HTML file with no external
+scripts, no trackers and no network calls. Fonts are embedded too, so it looks right with
+no connection. **The 141 links it points to are on the open internet and do need one.**
+
+In practice that means you can plan your week, tick off what you finished, write your
+notes and review your route on a plane or on data you're rationing — then go online only
+to open the actual resource. That's deliberate, and it's the part most learning platforms
+get wrong.
 
 **🔒 No account. No email. Nothing to sign up for.**
 Your progress is stored in your own browser, on your own device. Nobody is collecting
