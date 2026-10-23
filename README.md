@@ -13,7 +13,7 @@
 ![Paths](https://img.shields.io/badge/paths-20-blue?style=flat-square)
 ![Steps](https://img.shields.io/badge/steps-497-blue?style=flat-square)
 
-<img src="docs/hero.png" alt="Cyber Path — Start from zero, pick your lane. Sidebar showing eight domains with progress, and a hero panel with 20 paths, 170 weeks and 139 checked links." width="100%">
+<img src="docs/hero.png" alt="Cyber Path — Start from zero, pick your lane. Sidebar showing seven domains with progress, and a hero panel with 20 paths, 170 weeks and 139 checked links." width="100%">
 
 </div>
 
@@ -26,14 +26,14 @@ material, but **too much of it, with no order**. A thousand tutorials and no ans
 *"what do I do on Monday?"*
 
 Cyber Path is one page that answers that. Everyone starts at **Foundations**. Then you
-pick one of **eight domains** and work through Level 2, then the advanced Level 3 paths.
+pick one of **seven domains** and work through Level 2, then the advanced Level 3 paths.
 Every week tells you **what to open, what to build, and how to know you're done**.
 
 <div align="center">
 
 |  |  |  |  |  |
 |:--:|:--:|:--:|:--:|:--:|
-| **20** | **170** | **497** | **139** | **8** |
+| **20** | **170** | **497** | **139** | **7** |
 | paths | weeks | steps | checked links | domains |
 
 </div>
